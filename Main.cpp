@@ -24,10 +24,10 @@ int main(void) {
 	MTRand mtrand;
 
 	// creating the random input
-	vector<double> u_e1 = rand_var(T*res, mtrand);
-	vector<double> u_e2 = rand_var(T*res, mtrand);
-	vector<double> u_i1 = rand_var(T*res, mtrand);
-	vector<double> u_i2 = rand_var(T*res, mtrand);
+	vector<double> u_e1 = rand_var(T*res, mtrand, 0, 1500);
+	vector<double> u_e2 = rand_var(T*res, mtrand, 0, 1500);
+	vector<double> u_i1 = rand_var(T*res, mtrand, 0, 750);
+	vector<double> u_i2 = rand_var(T*res, mtrand, 0, 750);
 
 	// Initializing the populations;
 	Cortical_Colum Col;

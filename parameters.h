@@ -1,29 +1,28 @@
 #pragma once
 
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_e 		50
-#define tau_i 		50
+#define tau_e 		40
+#define tau_i 		40
 
 // Resting potential for exhibitory and inhibitory neurons in mV
-#define V_e0 	 	-60
-#define V_i0 	 	-60
+#define V_e0 	 	-64
+#define V_i0 	 	-64
 
 // Reversal potential of exhibitory and inhibitory neurons in mV
 #define V_rev_e  	0
 #define V_rev_i  	-70
 
 // Synaptic gain at resting voltage in mV * ms
-#define rho_e 		2.4
-#define rho_i 		-5.9
+#define rho_e 		1
+#define rho_i 		-1.05
 
 // Local axonal connectivity (dimensionless)
-
 #define Ne	 		410
 #define Ni	 		800
 
 // Maximum firing rate in ms^-1
-#define Qe_max		30E-3
-#define Qi_max		60E-3
+#define Qe_max		30.E-3
+#define Qi_max		60.E-3
 
 // Sigmoid threshold values in mV
 #define theta_e		-58.5
@@ -36,17 +35,12 @@
 // Parameter for sigmoidal mapping (dimensionless)
 #define C           (3.14159265/sqrt(3))
 
-// PSP decay rates in ms^-1
-#define alpha_ee	68E-3
-#define alpha_ei	176E-3
-#define alpha_ie	47E-3
-#define alpha_ii	82E-3
+// PSP rise time in ms^-1
+#define gamma_ee	300E-3
+#define gamma_ei	300E-3
+#define gamma_ie	65E-3
+#define gamma_ii	65E-3
 
-// PSP rise rates in ms^-1
-#define beta_ee	500E-3
-#define beta_ei	500E-3
-#define beta_ie	500E-3
-#define beta_ii	500E-3
-
-// scaling of extrinsiic input
+// scaling of extrinsic input
 #define s			0.1
+#define mphi_sc		750

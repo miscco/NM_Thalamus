@@ -68,10 +68,10 @@ void Cortical_Colum::set_RK		(int N, double u_e1, double u_e2, double u_i1, doub
 	Phi_ei[N] = dt*(var_x_ei);
 	Phi_ie[N] = dt*(var_x_ie);
 	Phi_ii[N] = dt*(var_x_ii);
-	x_ee  [N] = dt*(alpha_ee * beta_ee * (get_Qe(N) + noise_xRK(N, u_e1, u_e2) - var_Phi_ee) - (alpha_ee + beta_ee) * var_x_ee);
-	x_ei  [N] = dt*(alpha_ei * beta_ei * (get_Qe(N) + noise_xRK(N, u_i1, u_i2) - var_Phi_ei) - (alpha_ei + beta_ei) * var_x_ei);
-	x_ie  [N] = dt*(alpha_ie * beta_ie * (get_Qi(N) 			  			   - var_Phi_ie) - (alpha_ie + beta_ie) * var_x_ie);
-	x_ii  [N] = dt*(alpha_ii * beta_ii * (get_Qi(N)		 	  			 	   - var_Phi_ii) - (alpha_ii + beta_ii) * var_x_ii);
+	x_ee  [N] = dt*(pow(gamma_ee, 2) * (get_Qe(N) + noise_xRK(N, u_e1, u_e2) - var_Phi_ee) - 2 * gamma_ee * var_x_ee);
+	x_ei  [N] = dt*(pow(gamma_ei, 2) * (get_Qe(N) + noise_xRK(N, u_i1, u_i2) - var_Phi_ei) - 2 * gamma_ei * var_x_ei);
+	x_ie  [N] = dt*(pow(gamma_ie, 2) * (get_Qi(N) 			  			   	 - var_Phi_ie) - 2 * gamma_ie * var_x_ie);
+	x_ii  [N] = dt*(pow(gamma_ii, 2) * (get_Qi(N)		 	  			 	 - var_Phi_ii) - 2 * gamma_ii * var_x_ii);
 }
 
 // function that ads all the RK terms together
@@ -83,8 +83,8 @@ void Cortical_Colum::add_RK(double u_e1, double u_i1) {
 	Phi_ei[0] += (Phi_ei[1] + Phi_ei[2] * 2 + Phi_ei[3] * 2 + Phi_ei[4])/6;
 	Phi_ie[0] += (Phi_ie[1] + Phi_ie[2] * 2 + Phi_ie[3] * 2 + Phi_ie[4])/6;
 	Phi_ii[0] += (Phi_ii[1] + Phi_ii[2] * 2 + Phi_ii[3] * 2 + Phi_ii[4])/6;
-	x_ee  [0] += (x_ee	[1] + x_ee	[2] * 2 + x_ee	[3] * 2 + x_ee	[4])/6 + h * u_e1;
-	x_ei  [0] += (x_ei	[1] + x_ei	[2] * 2 + x_ei	[3] * 2 + x_ei	[4])/6 + h * u_i1;
+	x_ee  [0] += (x_ee	[1] + x_ee	[2] * 2 + x_ee	[3] * 2 + x_ee	[4])/6 + sqrt(s*Qe_max) * h * u_e1;
+	x_ei  [0] += (x_ei	[1] + x_ei	[2] * 2 + x_ei	[3] * 2 + x_ei	[4])/6 + sqrt(s*Qe_max) * h * u_i1;
 	x_ie  [0] += (x_ie	[1] + x_ie	[2] * 2 + x_ie	[3] * 2 + x_ie	[4])/6;
 	x_ii  [0] += (x_ii	[1] + x_ii	[2] * 2 + x_ii	[3] * 2 + x_ii	[4])/6;
 }
@@ -92,14 +92,14 @@ void Cortical_Colum::add_RK(double u_e1, double u_i1) {
 // function that uses Euler-Maruyama scheme to solve SODE
 void Cortical_Colum::set_Euler(double u_e, double u_i) {
 	extern const double dt;
-	Ve	  [0] = dt/tau_e * (V_e0 - Ve[0] + rho_e * psi_ee(0) * Phi_ee[0] + rho_i * psi_ie(0) * Phi_ie[0]);
-	Vi	  [0] = dt/tau_i * (V_i0 - Vi[0] + rho_e * psi_ei(0) * Phi_ei[0] + rho_i * psi_ii(0) * Phi_ii[0]);
-	Phi_ee[0] = dt*(x_ee[0]);
-	Phi_ei[0] = dt*(x_ei[0]);
-	Phi_ie[0] = dt*(x_ie[0]);
-	Phi_ii[0] = dt*(x_ii[0]);
-	x_ee  [0] = dt*(alpha_ee * beta_ee * (get_Qe(0) + noise_xE(u_e) - Phi_ee[0]) - (alpha_ee + beta_ee) * x_ee[0]);
-	x_ei  [0] = dt*(alpha_ei * beta_ei * (get_Qe(0) + noise_xE(u_i) - Phi_ei[0]) - (alpha_ei + beta_ei) * x_ei[0]);
-	x_ie  [0] = dt*(alpha_ie * beta_ie * (get_Qi(0) 			    - Phi_ie[0]) - (alpha_ie + beta_ie) * x_ie[0]);
-	x_ii  [0] = dt*(alpha_ii * beta_ii * (get_Qi(0)		 	  	    - Phi_ii[0]) - (alpha_ii + beta_ii) * x_ii[0]);
+	Ve	  [0] += dt/tau_e * (V_e0 - Ve[0] + rho_e * psi_ee(0) * Phi_ee[0] + rho_i * psi_ie(0) * Phi_ie[0]);
+	Vi	  [0] += dt/tau_i * (V_i0 - Vi[0] + rho_e * psi_ei(0) * Phi_ei[0] + rho_i * psi_ii(0) * Phi_ii[0]);
+	Phi_ee[0] += dt*(x_ee[0]);
+	Phi_ei[0] += dt*(x_ei[0]);
+	Phi_ie[0] += dt*(x_ie[0]);
+	Phi_ii[0] += dt*(x_ii[0]);
+	x_ee  [0] += dt*(pow(gamma_ee, 2) * (get_Qe(0) + noise_xE(u_e) - Phi_ee[0]) - 2 * gamma_ee * x_ee[0]);
+	x_ei  [0] += dt*(pow(gamma_ei, 2) * (get_Qe(0) + noise_xE(u_i) - Phi_ei[0]) - 2 * gamma_ei * x_ei[0]);
+	x_ie  [0] += dt*(pow(gamma_ie, 2) * (get_Qi(0) 			      - Phi_ie[0]) - 2 * gamma_ie * x_ie[0]);
+	x_ii  [0] += dt*(pow(gamma_ii, 2) * (get_Qi(0)		 	  	  - Phi_ii[0]) - 2 * gamma_ii * x_ii[0]);
 }

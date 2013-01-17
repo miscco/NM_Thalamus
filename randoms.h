@@ -13,15 +13,12 @@ extern const vector<double> B2 = {0,
 								  1.28727807507536762265942797967,
 								  0.44477273249350995909523476257164};
 
-// noise standard deviation
-#define sigma		5
-
 // function that creates a vector of random numbers with length N and SD sigma
-vector<double> rand_var (int N, MTRand mtrand) {
+vector<double> rand_var (int N, MTRand mtrand,double mean, double sd) {
 	mtrand.seed();
 	vector<double> dW(N);
 	for (auto i=0; i<N; ++i){
-		dW[i] = mtrand.randNorm(0.0,sqrt(sigma));
+		dW[i] = mtrand.randNorm(mean,sqrt(sd));
 	}
 	return dW;
 }

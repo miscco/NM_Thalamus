@@ -1,14 +1,16 @@
-#include <iostream>
 #include <ctime>
 #include <vector>
+#include "mex.h"
+#include "matrix.h"
 #include "randoms.h"
-#include "matio.h"
-
 #include "Cortical_Colum.h"
+#include "saves.h"
 #include "ODE.h"
-#include "saves.cpp"
-
 using std::vector;
+
+// Implementation of the main file for mex compiler
+// mex command is given by:
+// mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" SteynRoss.cpp Cortical_Colum.cpp
 
 extern const int T 		= 120;
 extern const int res 	= 1E3;
@@ -16,9 +18,10 @@ extern const double dt 	= 1E3/res;
 extern const double h	= sqrt(dt);
 
 
-// simulation of the model proposed in Steyn-Ross2009
+// simulation of the model proposed in Steyn-Ross2004
 
-int main(void) {
+// input arguments are a vector of length 8 with the connectivities and an integer setting the resolution of the grid
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	// Initializing the mersenne twister.
 	MTRand mtrand;
 
@@ -35,11 +38,6 @@ int main(void) {
 	vector<double> Ve (T*res);
 	vector<double> Vi (T*res);
 
-
-	// takes the time of the simulation
-	time_t start,end;
-	time (&start);
-
 	// simulation
 	for (int t=0; t< T*res; ++t) {
 		ODE (Col, u_e1[t], u_e2[t], u_i1[t], u_i2[t]);
@@ -47,12 +45,7 @@ int main(void) {
 		get_data(t, Col, Ve, Vi);
 	}
 
-	time (&end);
-	// time consumed by the simulation
-	double dif = difftime(end,start);
-	std::cout << "simulation done!\n";
-	std::cout << "took " << dif 	<< " seconds" << "\n";
-
-	_SAVEVARS((Ve)(Vi))
-	std::cout << "end\n";
+	plhs[0] = getMexArray(Ve);
+	plhs[1] = getMexArray(Vi);
+	return;
 }

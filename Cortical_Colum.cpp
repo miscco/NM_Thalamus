@@ -4,15 +4,15 @@
 // function that returns the firing rate of the exitatory population
 double Cortical_Colum::get_Qe	(int N) const{
 	_SWITCH((Ve))
-	double z = Ne * Qe_max / (1 + exp(-C * (var_Ve * theta_e) / sigma_e));
-	return z;
+	double q = Ne * Qe_max / (1 + exp(-C * (var_Ve * theta_e) / sigma_e));
+	return q;
 }
 
 // function that returns the firing rate of the exitatory population
 double Cortical_Colum::get_Qi	(int N) const{
 	_SWITCH((Vi))
-	double z = Ni * Qi_max / (1 + exp(-C * (var_Vi * theta_i) / sigma_i));
-	return z;
+	double q = Ni * Qi_max / (1 + exp(-C * (var_Vi * theta_i) / sigma_i));
+	return q;
 }
 
 // function that scales the input
@@ -47,14 +47,14 @@ double Cortical_Colum::psi_ii	(int N) const{
 double Cortical_Colum::noise_xRK(int N, double u_1, double u_2) const{
 	extern const double h;
 	extern const vector<double> B1, B2;
-	double n = s * Qe_max + sqrt(s*Qe_max) / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
+	double n = s  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
 	return n;
 }
 
 // function that returns the noise to inhibitory population for stochastic RK4
 double Cortical_Colum::noise_xE	(double u) const{
 	extern const double h;
-	double n = s * Qe_max + sqrt(s*Qe_max) / h * u;
+	double n = s / h * u;
 	return n;
 }
 
@@ -83,8 +83,8 @@ void Cortical_Colum::add_RK(double u_e1, double u_i1) {
 	Phi_ei[0] += (Phi_ei[1] + Phi_ei[2] * 2 + Phi_ei[3] * 2 + Phi_ei[4])/6;
 	Phi_ie[0] += (Phi_ie[1] + Phi_ie[2] * 2 + Phi_ie[3] * 2 + Phi_ie[4])/6;
 	Phi_ii[0] += (Phi_ii[1] + Phi_ii[2] * 2 + Phi_ii[3] * 2 + Phi_ii[4])/6;
-	x_ee  [0] += (x_ee	[1] + x_ee	[2] * 2 + x_ee	[3] * 2 + x_ee	[4])/6 + sqrt(s*Qe_max) * h * u_e1;
-	x_ei  [0] += (x_ei	[1] + x_ei	[2] * 2 + x_ei	[3] * 2 + x_ei	[4])/6 + sqrt(s*Qe_max) * h * u_i1;
+	x_ee  [0] += (x_ee	[1] + x_ee	[2] * 2 + x_ee	[3] * 2 + x_ee	[4])/6 + s * h * u_e1;
+	x_ei  [0] += (x_ei	[1] + x_ei	[2] * 2 + x_ei	[3] * 2 + x_ei	[4])/6 + s * h * u_i1;
 	x_ie  [0] += (x_ie	[1] + x_ie	[2] * 2 + x_ie	[3] * 2 + x_ie	[4])/6;
 	x_ii  [0] += (x_ii	[1] + x_ii	[2] * 2 + x_ii	[3] * 2 + x_ii	[4])/6;
 }
@@ -100,6 +100,6 @@ void Cortical_Colum::set_Euler(double u_e, double u_i) {
 	Phi_ii[0] += dt*(x_ii[0]);
 	x_ee  [0] += dt*(pow(gamma_ee, 2) * (get_Qe(0) + noise_xE(u_e) - Phi_ee[0]) - 2 * gamma_ee * x_ee[0]);
 	x_ei  [0] += dt*(pow(gamma_ei, 2) * (get_Qe(0) + noise_xE(u_i) - Phi_ei[0]) - 2 * gamma_ei * x_ei[0]);
-	x_ie  [0] += dt*(pow(gamma_ie, 2) * (get_Qi(0) 			      - Phi_ie[0]) - 2 * gamma_ie * x_ie[0]);
-	x_ii  [0] += dt*(pow(gamma_ii, 2) * (get_Qi(0)		 	  	  - Phi_ii[0]) - 2 * gamma_ii * x_ii[0]);
+	x_ie  [0] += dt*(pow(gamma_ie, 2) * (get_Qi(0) 			       - Phi_ie[0]) - 2 * gamma_ie * x_ie[0]);
+	x_ii  [0] += dt*(pow(gamma_ii, 2) * (get_Qi(0)		 	  	   - Phi_ii[0]) - 2 * gamma_ii * x_ii[0]);
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_e 		40
-#define tau_i 		40
+#define tau_e 		50
+#define tau_i 		50
 
 // Resting potential for exhibitory and inhibitory neurons in mV
 #define V_e0 	 	-64
@@ -36,11 +36,11 @@
 #define C           (3.14159265/sqrt(3))
 
 // PSP rise time in ms^-1
-#define gamma_ee	300E-3
-#define gamma_ei	300E-3
-#define gamma_ie	65E-3
-#define gamma_ii	65E-3
+#define gamma_ee	70E-3
+#define gamma_ei	70E-3
+#define gamma_ie	58.6E-3
+#define gamma_ii	58.6E-3
 
 // scaling of extrinsic input
 #define s			0.1
-#define mphi_sc		750
+#define phi_sc		1.5

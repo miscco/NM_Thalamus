@@ -4,6 +4,8 @@
 #include "Cortical_Colum.h"
 using std::vector;
 
+// saving file for the c++ compilation
+
 // saving the fluctuations of the populations
 inline void get_data(int counter, Cortical_Colum& Col, vector<double>& Ve, vector<double>& Vi) {
 	Ve[counter] = Col.Ve[0];

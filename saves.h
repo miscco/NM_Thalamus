@@ -3,6 +3,7 @@
 #include "Cortical_Colum.h"
 using std::vector;
 
+// saving file for the mex compilation
 
 // function to copy a std::vector into a matlab matrix
 mxArray * getMexArray(const std::vector<double>& v){

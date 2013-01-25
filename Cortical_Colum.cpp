@@ -4,14 +4,14 @@
 // function that returns the firing rate of the exitatory population
 double Cortical_Colum::get_Qe	(int N) const{
 	_SWITCH((Ve))
-	double q = Ne * Qe_max / (1 + exp(-C * (var_Ve * theta_e) / sigma_e));
+	double q = Qe_max / (1 + exp(-C * (var_Ve * theta_e) / sigma_e));
 	return q;
 }
 
 // function that returns the firing rate of the exitatory population
 double Cortical_Colum::get_Qi	(int N) const{
 	_SWITCH((Vi))
-	double q = Ni * Qi_max / (1 + exp(-C * (var_Vi * theta_i) / sigma_i));
+	double q = Qi_max / (1 + exp(-C * (var_Vi * theta_i) / sigma_i));
 	return q;
 }
 
@@ -68,10 +68,10 @@ void Cortical_Colum::set_RK		(int N, double u_e1, double u_e2, double u_i1, doub
 	Phi_ei[N] = dt*(var_x_ei);
 	Phi_ie[N] = dt*(var_x_ie);
 	Phi_ii[N] = dt*(var_x_ii);
-	x_ee  [N] = dt*(pow(gamma_ee, 2) * (get_Qe(N) + noise_xRK(N, u_e1, u_e2) - var_Phi_ee) - 2 * gamma_ee * var_x_ee);
-	x_ei  [N] = dt*(pow(gamma_ei, 2) * (get_Qe(N) + noise_xRK(N, u_i1, u_i2) - var_Phi_ei) - 2 * gamma_ei * var_x_ei);
-	x_ie  [N] = dt*(pow(gamma_ie, 2) * (get_Qi(N) 			  			   	 - var_Phi_ie) - 2 * gamma_ie * var_x_ie);
-	x_ii  [N] = dt*(pow(gamma_ii, 2) * (get_Qi(N)		 	  			 	 - var_Phi_ii) - 2 * gamma_ii * var_x_ii);
+	x_ee  [N] = dt*(pow(gamma_ee, 2) * (Nee * get_Qe(N) + noise_xRK(N, u_e1, u_e2) - var_Phi_ee) - 2 * gamma_ee * var_x_ee);
+	x_ei  [N] = dt*(pow(gamma_ei, 2) * (Nei * get_Qe(N) + noise_xRK(N, u_i1, u_i2) - var_Phi_ei) - 2 * gamma_ei * var_x_ei);
+	x_ie  [N] = dt*(pow(gamma_ie, 2) * (Nie * get_Qi(N) 			  			   - var_Phi_ie) - 2 * gamma_ie * var_x_ie);
+	x_ii  [N] = dt*(pow(gamma_ii, 2) * (Nii * get_Qi(N)		 	  			 	   - var_Phi_ii) - 2 * gamma_ii * var_x_ii);
 }
 
 // function that ads all the RK terms together
@@ -98,8 +98,8 @@ void Cortical_Colum::set_Euler(double u_e, double u_i) {
 	Phi_ei[0] += dt*(x_ei[0]);
 	Phi_ie[0] += dt*(x_ie[0]);
 	Phi_ii[0] += dt*(x_ii[0]);
-	x_ee  [0] += dt*(pow(gamma_ee, 2) * (get_Qe(0) + noise_xE(u_e) - Phi_ee[0]) - 2 * gamma_ee * x_ee[0]);
-	x_ei  [0] += dt*(pow(gamma_ei, 2) * (get_Qe(0) + noise_xE(u_i) - Phi_ei[0]) - 2 * gamma_ei * x_ei[0]);
-	x_ie  [0] += dt*(pow(gamma_ie, 2) * (get_Qi(0) 			       - Phi_ie[0]) - 2 * gamma_ie * x_ie[0]);
-	x_ii  [0] += dt*(pow(gamma_ii, 2) * (get_Qi(0)		 	  	   - Phi_ii[0]) - 2 * gamma_ii * x_ii[0]);
+	x_ee  [0] += dt*(pow(gamma_ee, 2) * (Nee * get_Qe(0) + noise_xE(u_e) - Phi_ee[0]) - 2 * gamma_ee * x_ee[0]);
+	x_ei  [0] += dt*(pow(gamma_ei, 2) * (Nei * get_Qe(0) + noise_xE(u_i) - Phi_ei[0]) - 2 * gamma_ei * x_ei[0]);
+	x_ie  [0] += dt*(pow(gamma_ie, 2) * (Nie * get_Qi(0) 			     - Phi_ie[0]) - 2 * gamma_ie * x_ie[0]);
+	x_ii  [0] += dt*(pow(gamma_ii, 2) * (Nii * get_Qi(0)		 	  	 - Phi_ii[0]) - 2 * gamma_ii * x_ii[0]);
 }

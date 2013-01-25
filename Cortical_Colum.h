@@ -11,7 +11,7 @@ class Cortical_Colum {
 public:
 	// Constructors
 	Cortical_Colum(void)
-	: Ve 	 (_INIT(-68)), Vi 	  (_INIT(-68)),
+	: Ve 	 (_INIT(-60)), Vi 	  (_INIT(-60)),
 	  Phi_ee (_INIT(0.0)), Phi_ei (_INIT(0.0)), Phi_ie (_INIT(0.0)), Phi_ii (_INIT(0.0)),
 	  x_ee 	 (_INIT(0.0)), x_ei   (_INIT(0.0)), x_ie   (_INIT(0.0)), x_ii 	(_INIT(0.0))
 	{}

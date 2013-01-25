@@ -1,8 +1,8 @@
 #pragma once
 
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_e 		50
-#define tau_i 		50
+#define tau_e 		40
+#define tau_i 		40
 
 // Resting potential for exhibitory and inhibitory neurons in mV
 #define V_e0 	 	-64
@@ -17,12 +17,14 @@
 #define rho_i 		-1.05
 
 // Local axonal connectivity (dimensionless)
-#define Ne	 		410
-#define Ni	 		800
+#define Nee	 		410
+#define Nei	 		410
+#define Nie	 		810
+#define Nii	 		810
 
 // Maximum firing rate in ms^-1
-#define Qe_max		30.E-3
-#define Qi_max		60.E-3
+#define Qe_max		30E-3
+#define Qi_max		60E-3
 
 // Sigmoid threshold values in mV
 #define theta_e		-58.5
@@ -36,10 +38,10 @@
 #define C           (3.14159265/sqrt(3))
 
 // PSP rise time in ms^-1
-#define gamma_ee	70E-3
-#define gamma_ei	70E-3
-#define gamma_ie	58.6E-3
-#define gamma_ii	58.6E-3
+#define gamma_ee	300E-3
+#define gamma_ei	300E-3
+#define gamma_ie	65E-3
+#define gamma_ii	65E-3
 
 // scaling of extrinsic input
 #define s			0.1

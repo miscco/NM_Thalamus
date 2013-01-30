@@ -1,50 +1,50 @@
 #include <cmath>
-#include "Cortical_Colum.h"
+#include "Thalamic_Colum.h"
 
 // function that returns the firing rate of the exitatory population
-double Cortical_Colum::get_Qe	(int N) const{
+double Thalamic_Colum::get_Qe	(int N) const{
 	_SWITCH((Ve))
 	double q = Qe_max / (1 + exp(-C * (var_Ve * theta_e) / sigma_e));
 	return q;
 }
 
 // function that returns the firing rate of the exitatory population
-double Cortical_Colum::get_Qi	(int N) const{
+double Thalamic_Colum::get_Qi	(int N) const{
 	_SWITCH((Vi))
 	double q = Qi_max / (1 + exp(-C * (var_Vi * theta_i) / sigma_i));
 	return q;
 }
 
 // function that scales the input
-double Cortical_Colum::psi_ee	(int N) const{
+double Thalamic_Colum::psi_ee	(int N) const{
 	_SWITCH((Ve))
 	double psi = (V_rev_e-var_Ve)/(V_rev_e-V_e0);
 	return psi;
 }
 
 // function that scales the input
-double Cortical_Colum::psi_ei	(int N) const{
+double Thalamic_Colum::psi_ei	(int N) const{
 	_SWITCH((Vi))
 	double psi = (V_rev_e-var_Vi)/(V_rev_e-V_i0);
 	return psi;
 }
 
 // function that scales the input
-double Cortical_Colum::psi_ie	(int N) const{
+double Thalamic_Colum::psi_ie	(int N) const{
 	_SWITCH((Ve))
 	double psi = (V_rev_i-var_Ve)/(V_rev_i-V_e0);
 	return psi;
 }
 
 // function that scales the input
-double Cortical_Colum::psi_ii	(int N) const{
+double Thalamic_Colum::psi_ii	(int N) const{
 	_SWITCH((Vi))
 	double psi = (V_rev_i-var_Vi)/(V_rev_i-V_i0);
 	return psi;
 }
 
 // function that returns the noise to exitatory population for stochastic RK4
-double Cortical_Colum::noise_xRK(int N, double u_1, double u_2) const{
+double Thalamic_Colum::noise_xRK(int N, double u_1, double u_2) const{
 	extern const double h;
 	extern const vector<double> B1, B2;
 	double n = s  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
@@ -52,14 +52,14 @@ double Cortical_Colum::noise_xRK(int N, double u_1, double u_2) const{
 }
 
 // function that returns the noise to inhibitory population for stochastic RK4
-double Cortical_Colum::noise_xE	(double u) const{
+double Thalamic_Colum::noise_xE	(double u) const{
 	extern const double h;
 	double n = s / h * u;
 	return n;
 }
 
 // function that calculates the Nth RK term
-void Cortical_Colum::set_RK		(int N, double u_e1, double u_e2, double u_i1, double u_i2) {
+void Thalamic_Colum::set_RK		(int N, double u_e1, double u_e2, double u_i1, double u_i2) {
 	extern const double dt;
 	_SWITCH((Ve)(Vi)(Phi_ee)(Phi_ei)(Phi_ie)(Phi_ii)(x_ee)(x_ei)(x_ie)(x_ii))
 	Ve	  [N] = dt/tau_e * (V_e0 - var_Ve + rho_e * psi_ee(N) * var_Phi_ee + rho_i * psi_ie(N) * var_Phi_ie);
@@ -75,7 +75,7 @@ void Cortical_Colum::set_RK		(int N, double u_e1, double u_e2, double u_i1, doub
 }
 
 // function that ads all the RK terms together
-void Cortical_Colum::add_RK(double u_e1, double u_i1) {
+void Thalamic_Colum::add_RK(double u_e1, double u_i1) {
 	extern const double h;
 	Ve	  [0] += (Ve	[1] + Ve	[2] * 2 + Ve	[3] * 2 + Ve	[4])/6;
 	Vi	  [0] += (Vi	[1] + Vi	[2] * 2 + Vi	[3] * 2 + Vi	[4])/6;
@@ -90,7 +90,7 @@ void Cortical_Colum::add_RK(double u_e1, double u_i1) {
 }
 
 // function that uses Euler-Maruyama scheme to solve SODE
-void Cortical_Colum::set_Euler(double u_e, double u_i) {
+void Thalamic_Colum::set_Euler(double u_e, double u_i) {
 	extern const double dt;
 	Ve	  [0] += dt/tau_e * (V_e0 - Ve[0] + rho_e * psi_ee(0) * Phi_ee[0] + rho_i * psi_ie(0) * Phi_ie[0]);
 	Vi	  [0] += dt/tau_i * (V_i0 - Vi[0] + rho_e * psi_ei(0) * Phi_ei[0] + rho_i * psi_ii(0) * Phi_ii[0]);

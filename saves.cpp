@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
 #include "matio.h"
-#include "Cortical_Colum.h"
+#include "Thalamic_Colum.h"
 using std::vector;
 
 // saving file for the c++ compilation
 
 // saving the fluctuations of the populations
-inline void get_data(int counter, Cortical_Colum& Col, vector<double>& Ve, vector<double>& Vi) {
+inline void get_data(int counter, Thalamic_Colum& Col, vector<double>& Ve, vector<double>& Vi) {
 	Ve[counter] = Col.Ve[0];
 	Vi[counter] = Col.Vi[0];
 }

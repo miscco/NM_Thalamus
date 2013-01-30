@@ -7,10 +7,10 @@ using std::vector;
 
 // implementation of the cortical module after Zavaglia2006
 
-class Cortical_Colum {
+class Thalamic_Colum {
 public:
 	// Constructors
-	Cortical_Colum(void)
+	Thalamic_Colum(void)
 	: Ve 	 (_INIT(-60)), Vi 	  (_INIT(-60)),
 	  Phi_ee (_INIT(0.0)), Phi_ei (_INIT(0.0)), Phi_ie (_INIT(0.0)), Phi_ii (_INIT(0.0)),
 	  x_ee 	 (_INIT(0.0)), x_ei   (_INIT(0.0)), x_ie   (_INIT(0.0)), x_ii 	(_INIT(0.0))
@@ -35,7 +35,7 @@ public:
 	void 	set_Euler	(double, double);
 	void 	add_RK	 	(double, double);
 
-	friend void get_data (int, Cortical_Colum&, vector<double>&, vector<double>&);
+	friend void get_data (int, Thalamic_Colum&, vector<double>&, vector<double>&);
 
 private:
 	// population variables

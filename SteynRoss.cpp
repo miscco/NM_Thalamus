@@ -3,14 +3,14 @@
 #include "mex.h"
 #include "matrix.h"
 #include "randoms.h"
-#include "Cortical_Colum.h"
+#include "Thalamic_Colum.h"
 #include "saves.h"
 #include "ODE.h"
 using std::vector;
 
 // Implementation of the main file for mex compiler
 // mex command is given by:
-// mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" SteynRoss.cpp Cortical_Colum.cpp
+// mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" SteynRoss.cpp Thalamic_Colum.cpp
 
 extern const int res 	= 1E3;
 extern const double dt 	= 1E3/res;
@@ -36,7 +36,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	vector<double> u_i2 = rand_var(Time, mtrand, phi_sc, phi_sc);
 
 	// Initializing the populations;
-	Cortical_Colum Col;
+	Thalamic_Colum Col;
 
 	// setting up the data containers
 	vector<double> Ve (T*res);

@@ -4,7 +4,7 @@
 #include "matio.h"
 
 #include "randoms.h"
-#include "Cortical_Colum.h"
+#include "Thalamic_Colum.h"
 #include "ODE.h"
 #include "saves.cpp"
 
@@ -29,7 +29,7 @@ int main(void) {
 	vector<double> u_i2 = rand_var(T*res, mtrand, phi_sc, phi_sc);
 
 	// Initializing the populations;
-	Cortical_Colum Col;
+	Thalamic_Colum Col;
 
 	// setting up the data containers
 	vector<double> Ve (T*res);

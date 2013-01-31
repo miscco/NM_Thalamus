@@ -1,8 +1,10 @@
 #pragma once
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
+#include <boost/preprocessor/facilities/empty.hpp>
 
 // macro for the initialization of the vectors
 #define _0		0.0, 0.0, 0.0, 0.0
@@ -44,3 +46,7 @@
 #define _SAVEVAR1(elem) elem, #elem
 #define _SAVEVAR2(r, data, i, elem) BOOST_PP_COMMA_IF( i ) _SAVEVAR1(elem)
 #define _SAVEVARS(...)	save_file( BOOST_PP_SEQ_FOR_EACH_I(_SAVEVAR2, , __VA_ARGS__) );
+
+// macro for repeated entry
+#define _REPEAT1(z, num, elem) BOOST_PP_COMMA_IF(num) elem
+#define _REPEAT(elem, num) 	 BOOST_PP_REPEAT(num , _REPEAT1 , elem)

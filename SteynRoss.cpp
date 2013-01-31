@@ -24,8 +24,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	// Initializing the mersenne twister.
 	MTRand mtrand;
 
-	const int T		= (int)(mxGetScalar(prhs[0]));
-	const int onset	= (int)(mxGetScalar(prhs[1]));
+	// inputs
+	double* Connectivity 	= mxGetPr (prhs[0]);
+	const int T				= (int)(mxGetScalar(prhs[1]));
+	const int onset			= (int)(mxGetScalar(prhs[2]));
 
 	const int Time 	= (T+onset)*res;
 
@@ -36,11 +38,16 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	vector<double> u_i2 = rand_var(Time, mtrand, phi_sc, phi_sc);
 
 	// Initializing the populations;
-	Thalamic_Colum Col;
+	Thalamic_Colum Col(Connectivity);
 
 	// setting up the data containers
-	vector<double> Ve (T*res);
-	vector<double> Vi (T*res);
+	vector<double> Ve 		(T*res);
+	vector<double> Vi 		(T*res);
+	vector<double> Phi_ee 	(T*res);
+	vector<double> Phi_ei 	(T*res);
+	vector<double> Phi_ie 	(T*res);
+	vector<double> Phi_ii 	(T*res);
+	vector<double> I_T		(T*res);
 
 	int count = 0;
 
@@ -49,12 +56,17 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		ODE (Col, u_e1[t], u_e2[t], u_i1[t], u_i2[t]);
 		//ODE2(Col, u_e1[t], u_i1[t]);
 		if(t>=onset*res){
-		get_data(count, Col, Ve, Vi);
+		get_data(count, Col, Ve, Vi, Phi_ee, Phi_ei, Phi_ie, Phi_ii, I_T);
 		++count;
 		}
 	}
 
 	plhs[0] = getMexArray(Ve);
 	plhs[1] = getMexArray(Vi);
+	plhs[2] = getMexArray(Phi_ee);
+	plhs[3] = getMexArray(Phi_ei);
+	plhs[4] = getMexArray(Phi_ie);
+	plhs[5] = getMexArray(Phi_ii);
+	plhs[6] = getMexArray(I_T);
 	return;
 }

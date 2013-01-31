@@ -14,7 +14,13 @@ mxArray * getMexArray(const std::vector<double>& v){
 
 
 // saving the fluctuations of the populations
-inline void get_data(int counter, Thalamic_Colum& Col, vector<double>& Ve, vector<double>& Vi) {
-	Ve[counter] = Col.Ve[0];
-	Vi[counter] = Col.Vi[0];
+inline void get_data(int counter, Thalamic_Colum& Col, vector<double>& Ve, vector<double>& Vi, vector<double>& Phi_ee,
+		vector<double>& Phi_ei, vector<double>& Phi_ie, vector<double>& Phi_ii,	vector<double>& I_T) {
+	Ve 		[counter] = Col.Ve 		[0];
+	Vi 		[counter] = Col.Vi 		[0];
+	Phi_ee 	[counter] = Col.Phi_ee 	[0];
+	Phi_ei 	[counter] = Col.Phi_ei 	[0];
+	Phi_ie 	[counter] = Col.Phi_ie 	[0];
+	Phi_ii 	[counter] = Col.Phi_ii 	[0];
+	I_T		[counter] = Col.I_T		(0);
 }

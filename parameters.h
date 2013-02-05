@@ -5,8 +5,8 @@
 #define tau_i 		40
 
 // Resting potential for exhibitory and inhibitory neurons in mV
-#define V_e0 	 	-68
-#define V_i0 	 	-64
+#define V_e0 	 	-67
+#define V_i0 	 	-62
 
 // Reversal potential of exhibitory and inhibitory neurons in mV
 #define V_rev_e  	0
@@ -40,6 +40,8 @@
 // scaling of extrinsic input
 #define s			0.1
 #define phi_sc		0.
+#define phi_st		0.
+#define phi_inp		0.
 
 // T-type current parameters
 #define Vh			-70

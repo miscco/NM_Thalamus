@@ -7,7 +7,7 @@ if nargin == 0
     Con     = [400;             % N_ti
                800;             % N_it
                800];            % N_ii    
-    T       = 10;      % duration of the simulation
+    T       = 60;      % duration of the simulation
     onset   = 5;
 end
 
@@ -24,15 +24,15 @@ title('Inhibitory membrane voltage'), xlabel('time in s'), ylabel('Vi in mV')
 subplot(313), plot(timeaxis,I_T)
 title('T-type current'), xlabel('time in s'), ylabel('I_T in muA')
 
-% figure(2)
-% subplot(411), plot(timeaxis,Phi_ee)
-% title('exitatory  to exitatory  PSP'), xlabel('time in s'), ylabel('Phi_{ee} in mV')
-% subplot(412), plot(timeaxis,Phi_ei)
-% title('exitatory  to inhibitory PSP'), xlabel('time in s'), ylabel('Phi_{ei} in mV')
-% subplot(413), plot(timeaxis,Phi_ie)
-% title('inhibitory to exitatory  PSP'), xlabel('time in s'), ylabel('Phi_{ie} in mV')
-% subplot(414), plot(timeaxis,Phi_ii)
-% title('inhibitory to inhibitory PSP'), xlabel('time in s'), ylabel('Phi_{ii} in mV')
+figure(2)
+subplot(411), plot(timeaxis,Phi_ee)
+title('exitatory  to exitatory  PSP'), xlabel('time in s'), ylabel('Phi_{ee} in mV')
+subplot(412), plot(timeaxis,Phi_ei)
+title('exitatory  to inhibitory PSP'), xlabel('time in s'), ylabel('Phi_{ei} in mV')
+subplot(413), plot(timeaxis,Phi_ie)
+title('inhibitory to exitatory  PSP'), xlabel('time in s'), ylabel('Phi_{ie} in mV')
+subplot(414), plot(timeaxis,Phi_ii)
+title('inhibitory to inhibitory PSP'), xlabel('time in s'), ylabel('Phi_{ii} in mV')
 
 % fs      = L/T;
 % NFFT    = 2^nextpow2(L);

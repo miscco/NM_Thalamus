@@ -23,10 +23,10 @@ int main(void) {
 	MTRand mtrand;
 
 	// creating the random input
-	vector<double> u_e1 = rand_var(T*res, mtrand, phi_sc, phi_sc);
-	vector<double> u_e2 = rand_var(T*res, mtrand, phi_sc, phi_sc);
-	vector<double> u_i1 = rand_var(T*res, mtrand, phi_sc, phi_sc);
-	vector<double> u_i2 = rand_var(T*res, mtrand, phi_sc, phi_sc);
+	vector<double> u_e1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	vector<double> u_e2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	vector<double> u_i1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	vector<double> u_i2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
 
 	// Initializing the populations;
 	Thalamic_Colum Col;

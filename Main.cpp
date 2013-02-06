@@ -6,7 +6,6 @@
 #include "randoms.h"
 #include "Thalamic_Colum.h"
 #include "ODE.h"
-#include "saves.cpp"
 
 using std::vector;
 
@@ -31,11 +30,6 @@ int main(void) {
 	// Initializing the populations;
 	Thalamic_Colum Col;
 
-	// setting up the data containers
-	vector<double> Ve (T*res);
-	vector<double> Vi (T*res);
-
-
 	// takes the time of the simulation
 	time_t start,end;
 	time (&start);
@@ -44,7 +38,6 @@ int main(void) {
 	for (int t=0; t< T*res; ++t) {
 		ODE (Col, u_e1[t], u_e2[t], u_i1[t], u_i2[t]);
 		//ODE2(Col, u_e1[t], u_i1[t]);
-		get_data(t, Col, Ve, Vi);
 	}
 
 	time (&end);
@@ -52,7 +45,5 @@ int main(void) {
 	double dif = difftime(end,start);
 	std::cout << "simulation done!\n";
 	std::cout << "took " << dif 	<< " seconds" << "\n";
-
-	_SAVEVARS((Ve)(Vi))
 	std::cout << "end\n";
 }

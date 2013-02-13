@@ -22,10 +22,8 @@ int main(void) {
 	MTRand mtrand;
 
 	// creating the random input
-	vector<double> u_e1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
-	vector<double> u_e2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
-	vector<double> u_i1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
-	vector<double> u_i2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	vector<double> u_t1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	vector<double> u_t2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
 
 	// Initializing the populations;
 	Thalamic_Colum Col;
@@ -36,8 +34,8 @@ int main(void) {
 
 	// simulation
 	for (int t=0; t< T*res; ++t) {
-		ODE (Col, u_e1[t], u_e2[t], u_i1[t], u_i2[t]);
-		//ODE2(Col, u_e1[t], u_i1[t]);
+		ODE (Col, u_t1[t], u_t2[t]);
+		//ODE2(Col, u_t1[t]);
 	}
 
 	time (&end);

@@ -32,8 +32,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	const int Time 	= (T+onset)*res;
 
 	// creating the random input
-	vector<double> u_t1 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, 0, phi_inp);
-	vector<double> u_t2 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, 0, phi_inp);
+	vector<double> u_t1 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, 0.0, phi_inp);
+	vector<double> u_t2 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, 0.0, phi_inp);
 
 	// Initializing the populations;
 	Thalamic_Colum Col(Connectivity);
@@ -41,14 +41,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	// setting up the data containers
 	vector<double> Vt 		(T*res);
 	vector<double> Vr 		(T*res);
-	vector<double> Ca 		(T*res);
-	vector<double> Phi_tt 	(T*res);
-	vector<double> Phi_tr 	(T*res);
-	vector<double> Phi_rt 	(T*res);
-	vector<double> Phi_rr 	(T*res);
-	vector<double> h_T_t	(T*res);
-	vector<double> h_T_r	(T*res);
+	vector<double> Cat 		(T*res);
+	vector<double> Car	 	(T*res);
 	vector<double> I_T_t	(T*res);
+	vector<double> I_T_r	(T*res);
+	vector<double> I_CAN_t 	(T*res);
+	vector<double> I_CAN_r 	(T*res);
+	vector<double> I_KCa_t	(T*res);
+	vector<double> I_KCa_r	(T*res);
 	vector<double> I_h		(T*res);
 
 	int count = 0;
@@ -58,21 +58,21 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		ODE (Col, u_t1[t], u_t2[t]);
 		//ODE2(Col, u_t1[t]);
 		if(t>=onset*res){
-		get_data(count, Col, Vt, Vr, Ca, Phi_tt, Phi_tr, Phi_rt, Phi_rr, h_T_t, h_T_r, I_T_t, I_h);
+		get_data(count, Col, Vt, Vr, Cat, Car, I_T_t, I_T_r, I_CAN_t, I_CAN_t, I_KCa_t, I_KCa_r, I_h);
 		++count;
 		}
 	}
 
 	plhs[0] = getMexArray(Vt);
 	plhs[1] = getMexArray(Vr);
-	plhs[2] = getMexArray(Ca);
-	plhs[3] = getMexArray(Phi_tt);
-	plhs[4] = getMexArray(Phi_tr);
-	plhs[5] = getMexArray(Phi_rt);
-	plhs[6] = getMexArray(Phi_rr);
-	plhs[7] = getMexArray(h_T_t);
-	plhs[8] = getMexArray(h_T_r);
-	plhs[9] = getMexArray(I_T_t);
+	plhs[2] = getMexArray(Cat);
+	plhs[3] = getMexArray(Car);
+	plhs[4] = getMexArray(I_T_t);
+	plhs[5] = getMexArray(I_T_r);
+	plhs[6] = getMexArray(I_CAN_t);
+	plhs[7] = getMexArray(I_CAN_r);
+	plhs[8] = getMexArray(I_KCa_t);
+	plhs[9] = getMexArray(I_KCa_r);
 	plhs[10]= getMexArray(I_h);
 	return;
 }

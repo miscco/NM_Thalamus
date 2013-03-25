@@ -51,6 +51,7 @@ double Thalamic_Colum::m_inf_t	(int N) const{
 }
 
 // function that returns the instant activation of the T-type current
+// by Destexhe 1994
 double Thalamic_Colum::m_inf_r	(int N) const{
 	_SWITCH((Vr))
 	double m = 1/(1+exp(-(var_Vr+52)/7.4));
@@ -72,6 +73,7 @@ double Thalamic_Colum::tau_h_t	(int N) const{
 }
 
 // function that returns the instant activation of the T-type current
+// by Destexhe 1994
 double Thalamic_Colum::h_inf_r	(int N) const{
 	_SWITCH((Vr))
 	double h = 1/(1+exp( (var_Vr+80)/5));
@@ -79,9 +81,10 @@ double Thalamic_Colum::h_inf_r	(int N) const{
 }
 
 // function that returns the instant activation of the T-type current
+// by Destexhe 1994
 double Thalamic_Colum::tau_h_r	(int N) const{
 	_SWITCH((Vr))
-	double tau = (85 + 1/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50)))/3.74;
+	double tau = 22.7 + 0.27/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50));
 	return tau;
 }
 
@@ -99,24 +102,53 @@ double Thalamic_Colum::I_T_r	(int N) const{
 	return I;
 }
 
-// function that returns the activation of the h-type current
-double Thalamic_Colum::h_inf	(int N) const{
-	_SWITCH((Vt)(theta_h))
-	double h = 1/(1+exp( (var_Vt-var_theta_h)/5.5));
-	return h;
-}
-
 // function that returns the instant activation of the T-type current
-double Thalamic_Colum::tau_h	(int N) const{
+double Thalamic_Colum::tau_m_h	(int N) const{
 	_SWITCH((Vt))
-	double tau = (20 + 1000/(exp((var_Vt+71.5)/14.2) + exp(-(var_Vt+89)/11.6)))/3.74;
+	double tau = (20 + 1000/(exp((var_Vt + 71.5)/14.2) + exp(-(var_Vt + 89)/11.6)));
 	return tau;
 }
 
+// function that returns the instant activation of the T-type current
+// by Destexhe 1994
+double Thalamic_Colum::m_inf_h	(int N) const{
+	_SWITCH((Vt))
+	double h = 1/(1+exp( (var_Vt+75)/5.5));
+	return h;
+}
+
 // function that returns the T-type current
-double Thalamic_Colum::I_h	(int N) const{
-	_SWITCH((Vt)(h_h_t))
-	double I = gh * var_h_h_t * (var_Vt - Vh);
+double Thalamic_Colum::I_h		(int N) const{
+	_SWITCH((Vt)(m_h)(m_h2))
+	double I = gh * (var_m_h + g_inc * var_m_h2) * (var_Vt - E_h);
+	return I;
+}
+
+// function that returns the T-type current
+double Thalamic_Colum::I_CAN_t	(int N) const{
+	_SWITCH((Vt)(m_CANt))
+	double I = g_CAN * var_m_CANt * var_m_CANt * (var_Vt - E_CAN);
+	return I;
+}
+
+// function that returns the T-type current
+double Thalamic_Colum::I_CAN_r	(int N) const{
+	_SWITCH((Vr)(m_CANr))
+	double I = g_CAN * var_m_CANr * var_m_CANr * (var_Vr - E_CAN);
+	return I;
+}
+
+// function that returns the T-type current
+double Thalamic_Colum::I_KCa_t	(int N) const{
+	_SWITCH((Vt)(m_KCat))
+	double I = g_KCa * var_m_KCat * var_m_KCat * (var_Vt - E_K);
+	return I;
+}
+
+// function that returns the T-type current
+double Thalamic_Colum::I_KCa_r	(int N) const{
+	_SWITCH((Vr)(m_KCar))
+	double I = g_KCa * var_m_KCar * var_m_KCar * (var_Vr - E_K);
 	return I;
 }
 
@@ -138,10 +170,11 @@ double Thalamic_Colum::noise_xE	(double u) const{
 // function that calculates the Nth RK term
 void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	extern const double dt;
-	_SWITCH((Vt)(Vr)(Ca)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(x_tt)(x_tr)(x_rt)(x_rr)(h_T_t)(h_T_r)(h_h_t)(theta_h))
-	Vt	  	[N] = dt/tau_t * (V_t0 - var_Vt + rho_e * psi_et(N) * var_Phi_tt + rho_i * psi_it(N) * var_Phi_rt - c*(I_T_t(N) + I_h(N)));
-	Vr	  	[N] = dt/tau_r * (V_r0 - var_Vr + rho_e * psi_er(N) * var_Phi_tr + rho_i * psi_ir(N) * var_Phi_rr - c*(I_T_r(N)));
-	Ca		[N] = dt*(alpha_Ca * I_T_t(N) - (var_Ca - Ca_0)/tau_Ca);
+	_SWITCH((Vt)(Vr)(Cat)(Car)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(x_tt)(x_tr)(x_rt)(x_rr)(h_T_t)(h_T_r)(m_CANt)(m_CANr)(m_KCat)(m_KCar)(m_h)(m_h2)(P_h))
+	Vt	  	[N] = dt/tau_t * (V_t0 - var_Vt + psi_et(N) * var_Phi_tt - psi_it(N) * var_Phi_rt - c * (I_T_t(N) + I_h(N)));
+	Vr	  	[N] = dt/tau_r * (V_r0 - var_Vr + psi_er(N) * var_Phi_tr - psi_ir(N) * var_Phi_rr - c * (I_T_r(N)));
+	Cat		[N] = dt*(alpha_Ca * I_T_t(N) - (var_Cat - Ca_0)/tau_Ca - n_P * k1 * pow(var_Cat, n_P) * (1 - var_P_h) + n_P * k2 * var_P_h);
+	Car		[N] = dt*(alpha_Ca * I_T_r(N) - (var_Car - Ca_0)/tau_Ca);
 	Phi_tt	[N] = dt*(var_x_tt);
 	Phi_tr	[N] = dt*(var_x_tr);
 	Phi_rt	[N] = dt*(var_x_rt);
@@ -152,8 +185,13 @@ void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
 	h_T_t 	[N] = dt*(h_inf_t(N) - var_h_T_t)/tau_h_t(N);
 	h_T_r 	[N] = dt*(h_inf_r(N) - var_h_T_r)/tau_h_r(N);
-	h_h_t 	[N] = dt*(h_inf  (N) - var_h_h_t)/tau_h  (N);
-	theta_h	[N] = dt*eta*(lambda * (var_Ca - Ca_0) + (theta_0 - var_theta_h));
+	m_CANt	[N] = dt*(aCAN * pow(var_Cat, n_CAN) * (1 - var_m_CANt) - bCAN * var_m_CANt);
+	m_CANr	[N] = dt*(aCAN * pow(var_Car, n_CAN) * (1 - var_m_CANr) - bCAN * var_m_CANr);
+	m_KCat	[N] = dt*(aKCa * pow(var_Cat, n_KCa) * (1 - var_m_KCat) - bKCa * var_m_KCat);
+	m_KCar	[N] = dt*(aKCa * pow(var_Car, n_KCa) * (1 - var_m_KCar) - bKCa * var_m_KCar);
+	m_h 	[N] = dt*((m_inf_h(N) * (1 - var_m_h2) - var_m_h)/tau_m_h(N) - k3 * var_P_h * var_m_h + k4 * var_m_h2);
+	m_h2 	[N] = dt*(k3   * var_P_h			 * 	    var_m_h  	- k4   * var_m_h2);
+	P_h		[N] = dt*(k1   * pow(var_Cat, n_P) 	 * (1 - var_P_h) 	- k2   * var_P_h);
 }
 
 // function that ads all the RK terms together
@@ -161,7 +199,8 @@ void Thalamic_Colum::add_RK(double u_t) {
 	extern const double h;
 	Vt	  	[0] += (Vt		[1] + Vt		[2] * 2 + Vt		[3] * 2 + Vt		[4])/6;
 	Vr	  	[0] += (Vr		[1] + Vr		[2] * 2 + Vr		[3] * 2 + Vr		[4])/6;
-	Ca	  	[0] += (Ca		[1] + Ca		[2] * 2 + Ca		[3] * 2 + Ca		[4])/6;
+	Cat	  	[0] += (Cat		[1] + Cat		[2] * 2 + Cat		[3] * 2 + Cat		[4])/6;
+	Car	  	[0] += (Car		[1] + Car		[2] * 2 + Car		[3] * 2 + Car		[4])/6;
 	Phi_tt	[0] += (Phi_tt	[1] + Phi_tt	[2] * 2 + Phi_tt	[3] * 2 + Phi_tt	[4])/6;
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
@@ -172,23 +211,13 @@ void Thalamic_Colum::add_RK(double u_t) {
 	x_rr  	[0] += (x_rr	[1] + x_rr		[2] * 2 + x_rr		[3] * 2 + x_rr		[4])/6;
 	h_T_t 	[0] += (h_T_t	[1] + h_T_t		[2] * 2 + h_T_t		[3] * 2 + h_T_t		[4])/6;
 	h_T_r 	[0] += (h_T_r	[1] + h_T_r		[2] * 2 + h_T_r		[3] * 2 + h_T_r		[4])/6;
-	h_h_t 	[0] += (h_h_t	[1] + h_h_t		[2] * 2 + h_h_t		[3] * 2 + h_h_t		[4])/6;
-	theta_h [0] += (theta_h	[1] + theta_h	[2] * 2 + theta_h	[3] * 2 + theta_h	[4])/6;
+	m_CANt 	[0] += (m_CANt	[1] + m_CANt	[2] * 2 + m_CANt	[3] * 2 + m_CANt	[4])/6;
+	m_CANr 	[0] += (m_CANr	[1] + m_CANr	[2] * 2 + m_CANr	[3] * 2 + m_CANr	[4])/6;
+	m_KCat 	[0] += (m_KCat	[1] + m_KCat	[2] * 2 + m_KCat	[3] * 2 + m_KCat	[4])/6;
+	m_KCar 	[0] += (m_KCar	[1] + m_KCar	[2] * 2 + m_KCar	[3] * 2 + m_KCar	[4])/6;
+	m_h	 	[0] += (m_h		[1] + m_h		[2] * 2 + m_h		[3] * 2 + m_h		[4])/6;
+	m_h2	[0] += (m_h2	[1] + m_h2		[2] * 2 + m_h2		[3] * 2 + m_h2		[4])/6;
+	P_h	 	[0] += (P_h		[1] + P_h		[2] * 2 + P_h		[3] * 2 + P_h		[4])/6;
 }
 
-// function that uses Euler-Maruyama scheme to solve SODE
-void Thalamic_Colum::set_Euler(double u_t) {
-	extern const double dt;
-	Vt	  [0] += dt/tau_t * (V_t0 - Vt[0] + rho_e * psi_et(0) * Phi_tt[0] + rho_i * psi_it(0) * Phi_rt[0]);
-	Vr	  [0] += dt/tau_r * (V_r0 - Vr[0] + rho_e * psi_it(0) * Phi_tr[0] + rho_i * psi_ir(0) * Phi_rr[0]);
-	Phi_tt[0] += dt*(x_tt[0]);
-	Phi_tr[0] += dt*(x_tr[0]);
-	Phi_rt[0] += dt*(x_rt[0]);
-	Phi_rr[0] += dt*(x_rr[0]);
-	x_tt  [0] += dt*(pow(gamma_t, 2) * (noise_xE(u_t) 	 - Phi_tt[0]) - 2 * gamma_t * x_tt[0]);
-	x_tr  [0] += dt*(pow(gamma_t, 2) * (N_tr * get_Qt(0) - Phi_tr[0]) - 2 * gamma_t * x_tr[0]);
-	x_rt  [0] += dt*(pow(gamma_r, 2) * (N_rt * get_Qr(0) - Phi_rt[0]) - 2 * gamma_r * x_rt[0]);
-	x_rr  [0] += dt*(pow(gamma_r, 2) * (N_rr * get_Qr(0) - Phi_rr[0]) - 2 * gamma_r * x_rr[0]);
-	h_T_t [0] = dt*(h_inf_t(0) - h_T_t[0])/tau_h_t(0);
-	h_T_r [0] = dt*(h_inf_r(0) - h_T_r[0])/tau_h_r(0);
-}
+

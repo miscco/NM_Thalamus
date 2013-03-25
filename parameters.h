@@ -1,10 +1,10 @@
 #pragma once
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_t 		40
-#define tau_r 		40
+#define tau_t 		30
+#define tau_r 		30
 
 // Resting potential for exhibitory and inhibitory neurons in mV
-#define V_t0 	 	-70
+#define V_t0 	 	-68
 #define V_r0 	 	-77
 
 // Reversal potential of exhibitory and inhibitory neurons in mV
@@ -13,24 +13,20 @@
 #define Vr_rev_e  	0
 #define Vr_rev_i  	-70
 
-// Synaptic gain at resting voltage in mV * ms
-#define rho_e 		1
-#define rho_i 		-1.05
-
 // Maximum firing rate in ms^-1
 #define Qt_max		30E-3
 #define Qr_max		60E-3
 
-#define Qt_burst	200E-3
-#define Qr_burst	500E-3
+#define Qt_burst	150E-3
+#define Qr_burst	300E-3
 
 // Sigmoid threshold values in mV
 #define theta_t		-58.5
 #define theta_r		-58.5
 
 // Standard deviation for threshold in mV
-#define sigma_t		4
-#define sigma_r		6
+#define sigma_t		6
+#define sigma_r		4
 
 // Parameter for sigmoidal mapping (dimensionless)
 #define C           (3.14159265/sqrt(3))
@@ -45,23 +41,39 @@
 #define gTr			3.0
 
 // h-type current parameters
-#define Vh			-43
-#define gh			0.2
+#define k1			2.5
+#define k2			4E-4
+#define k3			1E-1
+#define k4			1E-3
+#define n_P			2
 
-// parameters of the calcium adaption of h current
-#define eta			1E-2
-#define theta_0		-75
-#define lambda		5
+#define E_h			-40
+#define gh			0.02
+#define g_inc		2
+
+// parameters for the CAN current after Destexhe1994
+#define g_CAN		0.25
+#define n_CAN		2.
+#define aCAN		20.
+#define bCAN		0.002
+#define E_CAN		-20
+
+// parameters for the KCa current after Destexhe1994
+#define g_KCa		10.
+#define n_KCa		2.
+#define aKCa		48.
+#define bKCa		0.03
+#define E_K			-90
 
 // current scaling
-#define c			13.5
+#define c			12
 
 // Calcium parameter
-#define alpha_Ca	-0.02
-#define tau_Ca		5
-#define Ca_0		0.1
+#define alpha_Ca	-0.002
+#define tau_Ca		40
+#define Ca_0		2E-4
 
 // scaling of extrinsic input
 #define s			0.1
-#define phi_st		0.5
-#define phi_inp		0.5
+#define phi_st		0.0
+#define phi_inp		0.0

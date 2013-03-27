@@ -13,21 +13,19 @@ public:
 	Thalamic_Colum(void)
 	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
 	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
-	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)), 	x_rr	(_INIT(0.0)),
-	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_CANt	(_INIT(0.0)), 	m_CANr	(_INIT(0.0)),
-	  m_KCat (_INIT(0.0)), 	m_KCar	(_INIT(0.0)), 	m_h		(_INIT(0.0)), 	m_h2	(_INIT(0.0)),
-	  P_h	 (_INIT(0.0)),
+	  phi_r  (_INIT(0.0)),  x_tt 	(_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),
+	  x_rr	 (_INIT(0.0)),  y_r		(_INIT(0.0)),	h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),
+	  m_h	 (_INIT(0.0)),  m_h2	(_INIT(0.0)),  	P_h	 	(_INIT(0.0)),
 	  N_tr 	 (210), 	   	N_rt   	(410), 			N_rr 	(800)
 	{}
 
 	// Constructors
 	Thalamic_Colum(double* Con)
-	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat		(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
-	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
-	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt	(_INIT(0.0)), 	x_rr 	(_INIT(0.0)),
-	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_CANt	(_INIT(0.0)), 	m_CANr	(_INIT(0.0)),
-	  m_KCat (_INIT(0.0)), 	m_KCar	(_INIT(0.0)), 	m_h		(_INIT(0.0)), 	m_h2	(_INIT(0.0)),
-	  P_h	 (_INIT(0.0)),
+	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
+	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
+	  phi_r  (_INIT(0.0)),  x_tt 	(_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),
+	  x_rr	 (_INIT(0.0)),  y_r		(_INIT(0.0)),	h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),
+	  m_h	 (_INIT(0.0)),  m_h2	(_INIT(0.0)),  	P_h	 	(_INIT(0.0)),
 	  N_tr 	 (Con[0]), 	   	N_rt	(Con[1]), 		N_rr	(Con[2])
 	{}
 
@@ -60,14 +58,6 @@ public:
 	double  m_inf_h		(int) const;
 	double  tau_m_h		(int) const;
 
-	// CAN current
-	double I_CAN_t		(int) const;
-	double I_CAN_r		(int) const;
-
-	// KCa current
-	double I_KCa_t		(int) const;
-	double I_KCa_r		(int) const;
-
 	// noise functions
 	double 	noise_xRK 	(int, double, double) const;
 	double 	noise_xE 	(double) 		  	  const;
@@ -78,28 +68,26 @@ public:
 	void 	add_RK	 	(double);
 
 	// function to extract the data
-	friend void get_data (int, Thalamic_Colum&, _REPEAT(vector<double>&, 11));
+	friend void get_data (int, Thalamic_Colum&, _REPEAT(vector<double>&, 7));
 
 private:
 	// population variables
-	vector<double> 	Vt,			// exitatory membrane voltage
-					Vr,			// exitatory membrane voltage
+	vector<double> 	Vt,			// TC membrane voltage
+					Vr,			// RE membrane voltage
 					Cat,		// Calcium concentration 	 of TC population
 					Car,		// Calcium concentration 	 of RE population
 					Phi_tt,		// PostSP from TC population to TC population
 					Phi_tr,		// PostSP from TC population to RE population
 					Phi_rt,		// PostSP from RE population to TC population
 					Phi_rr,		// PostSP from RE population to RE population
-					x_tt,		// derivative of Phi_ee
-					x_tr,		// derivative of Phi_ei
-					x_rt,		// derivative of Phi_ie
-					x_rr,		// derivative of Phi_ii
+					phi_r,		// delayed action potential for rr connection
+					x_tt,		// derivative of Phi_tt
+					x_tr,		// derivative of Phi_tr
+					x_rt,		// derivative of Phi_rt
+					x_rr,		// derivative of Phi_rr
+					y_r,		// derivative of phi_r
 					h_T_t,		// inactivation of T channel
 					h_T_r,		// inactivation of T channel
-					m_CANt,		// activation of CAN channel
-					m_CANr,		// activation of CAN channel
-					m_KCat,		// activation of KCa channel
-					m_KCar,		// activation of KCa channel
 					m_h,		// activation of h   channel
 					m_h2,		// activation of h   channel bound
 					P_h;		// fraction of bound calcium

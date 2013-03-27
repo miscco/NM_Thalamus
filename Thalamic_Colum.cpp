@@ -124,34 +124,6 @@ double Thalamic_Colum::I_h		(int N) const{
 	return I;
 }
 
-// function that returns the T-type current
-double Thalamic_Colum::I_CAN_t	(int N) const{
-	_SWITCH((Vt)(m_CANt))
-	double I = g_CAN * var_m_CANt * var_m_CANt * (var_Vt - E_CAN);
-	return I;
-}
-
-// function that returns the T-type current
-double Thalamic_Colum::I_CAN_r	(int N) const{
-	_SWITCH((Vr)(m_CANr))
-	double I = g_CAN * var_m_CANr * var_m_CANr * (var_Vr - E_CAN);
-	return I;
-}
-
-// function that returns the T-type current
-double Thalamic_Colum::I_KCa_t	(int N) const{
-	_SWITCH((Vt)(m_KCat))
-	double I = g_KCa * var_m_KCat * var_m_KCat * (var_Vt - E_K);
-	return I;
-}
-
-// function that returns the T-type current
-double Thalamic_Colum::I_KCa_r	(int N) const{
-	_SWITCH((Vr)(m_KCar))
-	double I = g_KCa * var_m_KCar * var_m_KCar * (var_Vr - E_K);
-	return I;
-}
-
 // function that returns the noise to exitatory population for stochastic RK4
 double Thalamic_Colum::noise_xRK(int N, double u_1, double u_2) const{
 	extern const double h;
@@ -170,7 +142,7 @@ double Thalamic_Colum::noise_xE	(double u) const{
 // function that calculates the Nth RK term
 void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	extern const double dt;
-	_SWITCH((Vt)(Vr)(Cat)(Car)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(x_tt)(x_tr)(x_rt)(x_rr)(h_T_t)(h_T_r)(m_CANt)(m_CANr)(m_KCat)(m_KCar)(m_h)(m_h2)(P_h))
+	_SWITCH((Vt)(Vr)(Cat)(Car)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(phi_r)(x_tt)(x_tr)(x_rt)(x_rr)(y_r)(h_T_t)(h_T_r)(m_h)(m_h2)(P_h))
 	Vt	  	[N] = dt/tau_t * (V_t0 - var_Vt + psi_et(N) * var_Phi_tt - psi_it(N) * var_Phi_rt - c * (I_T_t(N) + I_h(N)));
 	Vr	  	[N] = dt/tau_r * (V_r0 - var_Vr + psi_er(N) * var_Phi_tr - psi_ir(N) * var_Phi_rr - c * (I_T_r(N)));
 	Cat		[N] = dt*(alpha_Ca * I_T_t(N) - (var_Cat - Ca_0)/tau_Ca - n_P * k1 * pow(var_Cat, n_P) * (1 - var_P_h) + n_P * k2 * var_P_h);
@@ -179,16 +151,14 @@ void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	Phi_tr	[N] = dt*(var_x_tr);
 	Phi_rt	[N] = dt*(var_x_rt);
 	Phi_rr	[N] = dt*(var_x_rr);
+	phi_r 	[N] = dt*(var_y_r);
 	x_tt  	[N] = dt*(pow(gamma_t, 2) * (noise_xRK(N, u_t1, u_t2) 	- var_Phi_tt) - 2 * gamma_t * var_x_tt);
 	x_tr  	[N] = dt*(pow(gamma_t, 2) * (N_tr * get_Qt(N)			- var_Phi_tr) - 2 * gamma_t * var_x_tr);
 	x_rt  	[N] = dt*(pow(gamma_r, 2) * (N_rt * get_Qr(N) 			- var_Phi_rt) - 2 * gamma_r * var_x_rt);
-	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
+	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * var_phi_r		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
+	y_r	 	[N] = dt*(pow(nu, 2) 	  * (		get_Qr(N)			- var_phi_r)  - 2 * nu 	  	* var_y_r);
 	h_T_t 	[N] = dt*(h_inf_t(N) - var_h_T_t)/tau_h_t(N);
 	h_T_r 	[N] = dt*(h_inf_r(N) - var_h_T_r)/tau_h_r(N);
-	m_CANt	[N] = dt*(aCAN * pow(var_Cat, n_CAN) * (1 - var_m_CANt) - bCAN * var_m_CANt);
-	m_CANr	[N] = dt*(aCAN * pow(var_Car, n_CAN) * (1 - var_m_CANr) - bCAN * var_m_CANr);
-	m_KCat	[N] = dt*(aKCa * pow(var_Cat, n_KCa) * (1 - var_m_KCat) - bKCa * var_m_KCat);
-	m_KCar	[N] = dt*(aKCa * pow(var_Car, n_KCa) * (1 - var_m_KCar) - bKCa * var_m_KCar);
 	m_h 	[N] = dt*((m_inf_h(N) * (1 - var_m_h2) - var_m_h)/tau_m_h(N) - k3 * var_P_h * var_m_h + k4 * var_m_h2);
 	m_h2 	[N] = dt*(k3   * var_P_h			 * 	    var_m_h  	- k4   * var_m_h2);
 	P_h		[N] = dt*(k1   * pow(var_Cat, n_P) 	 * (1 - var_P_h) 	- k2   * var_P_h);
@@ -205,16 +175,14 @@ void Thalamic_Colum::add_RK(double u_t) {
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
 	Phi_rr	[0] += (Phi_rr	[1] + Phi_rr	[2] * 2 + Phi_rr	[3] * 2 + Phi_rr	[4])/6;
+	phi_r	[0] += (phi_r	[1] + phi_r		[2] * 2 + phi_r		[3] * 2 + phi_r		[4])/6;
 	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * s * h * u_t;
 	x_tr  	[0] += (x_tr	[1] + x_tr		[2] * 2 + x_tr		[3] * 2 + x_tr		[4])/6;
 	x_rt  	[0] += (x_rt	[1] + x_rt		[2] * 2 + x_rt		[3] * 2 + x_rt		[4])/6;
 	x_rr  	[0] += (x_rr	[1] + x_rr		[2] * 2 + x_rr		[3] * 2 + x_rr		[4])/6;
+	y_r  	[0] += (y_r		[1] + y_r		[2] * 2 + y_r		[3] * 2 + y_r		[4])/6;
 	h_T_t 	[0] += (h_T_t	[1] + h_T_t		[2] * 2 + h_T_t		[3] * 2 + h_T_t		[4])/6;
 	h_T_r 	[0] += (h_T_r	[1] + h_T_r		[2] * 2 + h_T_r		[3] * 2 + h_T_r		[4])/6;
-	m_CANt 	[0] += (m_CANt	[1] + m_CANt	[2] * 2 + m_CANt	[3] * 2 + m_CANt	[4])/6;
-	m_CANr 	[0] += (m_CANr	[1] + m_CANr	[2] * 2 + m_CANr	[3] * 2 + m_CANr	[4])/6;
-	m_KCat 	[0] += (m_KCat	[1] + m_KCat	[2] * 2 + m_KCat	[3] * 2 + m_KCat	[4])/6;
-	m_KCar 	[0] += (m_KCar	[1] + m_KCar	[2] * 2 + m_KCar	[3] * 2 + m_KCar	[4])/6;
 	m_h	 	[0] += (m_h		[1] + m_h		[2] * 2 + m_h		[3] * 2 + m_h		[4])/6;
 	m_h2	[0] += (m_h2	[1] + m_h2		[2] * 2 + m_h2		[3] * 2 + m_h2		[4])/6;
 	P_h	 	[0] += (P_h		[1] + P_h		[2] * 2 + P_h		[3] * 2 + P_h		[4])/6;

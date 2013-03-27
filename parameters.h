@@ -51,22 +51,8 @@
 #define gh			0.02
 #define g_inc		2
 
-// parameters for the CAN current after Destexhe1994
-#define g_CAN		0.25
-#define n_CAN		2.
-#define aCAN		20.
-#define bCAN		0.002
-#define E_CAN		-20
-
-// parameters for the KCa current after Destexhe1994
-#define g_KCa		10.
-#define n_KCa		2.
-#define aKCa		48.
-#define bKCa		0.03
-#define E_K			-90
-
 // current scaling
-#define c			12
+#define c			10
 
 // Calcium parameter
 #define alpha_Ca	-0.002
@@ -77,3 +63,6 @@
 #define s			0.1
 #define phi_st		0.0
 #define phi_inp		0.0
+
+// axonal parameter in ms^-1
+#define nu			(0.2*1.4)

@@ -4,14 +4,14 @@
 function Plots(T, onset)
 
 if nargin == 0
-    Con     = [600;             % N_tr
+    Con     = [400;             % N_tr
                400;             % N_rt
                400];            % N_rr    
     T       = 20;      % duration of the simulation
     onset   = 5;
 end
 
-[Vt, Vr, Cat, Car, I_T_t, I_T_r, I_CAN_t, I_CAN_r, I_KCa_t, I_KCa_r,I_h] = Thalamus(Con, T, onset);
+[Vt, Vr, Cat, Car, I_T_t, I_T_r, I_h] = Thalamus(Con, T, onset);
 
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);
@@ -42,13 +42,13 @@ title('RE Ca concentration'),                 xlabel('time in s'), ylabel('Ca in
 % subplot(313), plot(timeaxis,I_KCa_t)
 % title('TC I_{KCa} current '), xlabel('time in s'), ylabel('I_{KCa} in \muA cm^{-2}')
 
-% % 
-% fs      = L/T;
-% NFFT    = 2^nextpow2(L);
-% 
-% [Pxx,f] = pwelch(Vt-mean(Vt), 1024, 256, NFFT, fs,'onesided');
-% n       = find(f<=60, 1, 'last' );
-%  
-% figure(3)
-% plot(f(1:n),Pxx(1:n))
-% title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')
+
+fs      = L/T;
+NFFT    = 2^nextpow2(L);
+
+[Pxx,f] = pwelch(Vt-mean(Vt), 1024, 256, NFFT, fs,'onesided');
+n       = find(f<=60, 1, 'last' );
+ 
+figure(3)
+plot(f(1:n),Pxx(1:n))
+title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')

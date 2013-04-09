@@ -39,24 +39,31 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	Thalamic_Colum Col(Connectivity);
 
 	// setting up the data containers
+	vector<double> Vt 		(T*res);
 	vector<double> Vr 		(T*res);
+	vector<double> Cat	 	(T*res);
 	vector<double> Car	 	(T*res);
+	vector<double> I_T_t	(T*res);
 	vector<double> I_T_r	(T*res);
+	vector<double> I_h		(T*res);
 
 	int count = 0;
 
-	// simulation
 	for (int t=0; t<Time; ++t) {
 		ODE (Col, u_t1[t], u_t2[t]);
 		//ODE2(Col, u_t1[t]);
 		if(t>=onset*res){
-		get_data(count, Col, Vr, Car, I_T_r);
+		get_data(count, Col, Vt, Vr, Cat, Car, I_T_t, I_T_r, I_h);
 		++count;
 		}
 	}
 
-	plhs[0] = getMexArray(Vr);
-	plhs[1] = getMexArray(Car);
-	plhs[2] = getMexArray(I_T_r);
+	plhs[0] = getMexArray(Vt);
+	plhs[1] = getMexArray(Vr);
+	plhs[2] = getMexArray(Cat);
+	plhs[3] = getMexArray(Car);
+	plhs[4] = getMexArray(I_T_t);
+	plhs[5] = getMexArray(I_T_r);
+	plhs[6] = getMexArray(I_h);
 	return;
 }

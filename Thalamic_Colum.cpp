@@ -10,8 +10,8 @@ double Thalamic_Colum::get_Qt	(int N) const{
 
 // function that returns the firing rate of the exitatory population
 double Thalamic_Colum::get_Qr	(int N) const{
-	_SWITCH((Vr)(h_T_r))
-	double q = (Qr_max + var_h_T_r * Qr_burst) / (1 + exp(-C * (var_Vr - theta_r) / sigma_r));
+	_SWITCH((Vr))
+	double q = (Qr_max + Qr_burst) / (1 + exp(-C * (var_Vr - theta_r) / sigma_r));
 	return q;
 }
 
@@ -84,7 +84,7 @@ double Thalamic_Colum::h_inf_r	(int N) const{
 // by Destexhe 1994
 double Thalamic_Colum::tau_h_r	(int N) const{
 	_SWITCH((Vr))
-	double tau = 22.7 + 0.27/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50));
+	double tau =  28.307 + 0.333/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50));
 	return tau;
 }
 
@@ -142,7 +142,7 @@ double Thalamic_Colum::noise_xE	(double u) const{
 // function that calculates the Nth RK term
 void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	extern const double dt;
-	_SWITCH((Vt)(Vr)(Cat)(Car)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(phi_r)(x_tt)(x_tr)(x_rt)(x_rr)(y_r)(h_T_t)(h_T_r)(m_h)(m_h2)(P_h))
+	_SWITCH((Vt)(Vr)(Cat)(Car)(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)(x_tt)(x_tr)(x_rt)(x_rr)(h_T_t)(h_T_r)(m_h)(m_h2)(P_h))
 	Vt	  	[N] = dt/tau_t * (V_t0 - var_Vt + psi_et(N) * var_Phi_tt - psi_it(N) * var_Phi_rt - c * (I_T_t(N) + I_h(N)));
 	Vr	  	[N] = dt/tau_r * (V_r0 - var_Vr + psi_er(N) * var_Phi_tr - psi_ir(N) * var_Phi_rr - c * (I_T_r(N)));
 	Cat		[N] = dt*(alpha_Ca * I_T_t(N) - (var_Cat - Ca_0)/tau_Ca - n_P * k1 * pow(var_Cat, n_P) * (1 - var_P_h) + n_P * k2 * var_P_h);
@@ -151,12 +151,10 @@ void Thalamic_Colum::set_RK		(int N, double u_t1, double u_t2) {
 	Phi_tr	[N] = dt*(var_x_tr);
 	Phi_rt	[N] = dt*(var_x_rt);
 	Phi_rr	[N] = dt*(var_x_rr);
-	phi_r 	[N] = dt*(var_y_r);
 	x_tt  	[N] = dt*(pow(gamma_t, 2) * (noise_xRK(N, u_t1, u_t2) 	- var_Phi_tt) - 2 * gamma_t * var_x_tt);
 	x_tr  	[N] = dt*(pow(gamma_t, 2) * (N_tr * get_Qt(N)			- var_Phi_tr) - 2 * gamma_t * var_x_tr);
 	x_rt  	[N] = dt*(pow(gamma_r, 2) * (N_rt * get_Qr(N) 			- var_Phi_rt) - 2 * gamma_r * var_x_rt);
-	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * var_phi_r		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
-	y_r	 	[N] = dt*(pow(nu, 2) 	  * (		get_Qr(N)			- var_phi_r)  - 2 * nu 	  	* var_y_r);
+	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
 	h_T_t 	[N] = dt*(h_inf_t(N) - var_h_T_t)/tau_h_t(N);
 	h_T_r 	[N] = dt*(h_inf_r(N) - var_h_T_r)/tau_h_r(N);
 	m_h 	[N] = dt*((m_inf_h(N) * (1 - var_m_h2) - var_m_h)/tau_m_h(N) - k3 * var_P_h * var_m_h + k4 * var_m_h2);
@@ -175,12 +173,10 @@ void Thalamic_Colum::add_RK(double u_t) {
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
 	Phi_rr	[0] += (Phi_rr	[1] + Phi_rr	[2] * 2 + Phi_rr	[3] * 2 + Phi_rr	[4])/6;
-	phi_r	[0] += (phi_r	[1] + phi_r		[2] * 2 + phi_r		[3] * 2 + phi_r		[4])/6;
 	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * s * h * u_t;
 	x_tr  	[0] += (x_tr	[1] + x_tr		[2] * 2 + x_tr		[3] * 2 + x_tr		[4])/6;
 	x_rt  	[0] += (x_rt	[1] + x_rt		[2] * 2 + x_rt		[3] * 2 + x_rt		[4])/6;
 	x_rr  	[0] += (x_rr	[1] + x_rr		[2] * 2 + x_rr		[3] * 2 + x_rr		[4])/6;
-	y_r  	[0] += (y_r		[1] + y_r		[2] * 2 + y_r		[3] * 2 + y_r		[4])/6;
 	h_T_t 	[0] += (h_T_t	[1] + h_T_t		[2] * 2 + h_T_t		[3] * 2 + h_T_t		[4])/6;
 	h_T_r 	[0] += (h_T_r	[1] + h_T_r		[2] * 2 + h_T_r		[3] * 2 + h_T_r		[4])/6;
 	m_h	 	[0] += (m_h		[1] + m_h		[2] * 2 + m_h		[3] * 2 + m_h		[4])/6;

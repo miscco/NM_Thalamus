@@ -5,7 +5,7 @@
 
 // Resting potential for exhibitory and inhibitory neurons in mV
 #define V_t0 	 	-68
-#define V_r0 	 	-77
+#define V_r0 	 	-72
 
 // Reversal potential of exhibitory and inhibitory neurons in mV
 #define Vt_rev_e  	0
@@ -33,7 +33,7 @@
 
 // PSP rise time in ms^-1
 #define gamma_t		70E-3
-#define gamma_r		150E-3
+#define gamma_r		80E-3
 
 // T-type current parameters
 #define VT			120
@@ -52,7 +52,7 @@
 #define g_inc		2
 
 // current scaling
-#define c			10
+#define c			25.
 
 // Calcium parameter
 #define alpha_Ca	-0.002
@@ -63,6 +63,3 @@
 #define s			0.1
 #define phi_st		0.0
 #define phi_inp		0.0
-
-// axonal parameter in ms^-1
-#define nu			(0.2*1.4)

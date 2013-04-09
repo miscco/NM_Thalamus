@@ -13,9 +13,9 @@ public:
 	Thalamic_Colum(void)
 	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
 	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
-	  phi_r  (_INIT(0.0)),  x_tt 	(_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),
-	  x_rr	 (_INIT(0.0)),  y_r		(_INIT(0.0)),	h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),
-	  m_h	 (_INIT(0.0)),  m_h2	(_INIT(0.0)),  	P_h	 	(_INIT(0.0)),
+	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),  	x_rr	(_INIT(0.0)),
+	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_h	 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),
+	  P_h	 (_INIT(0.0)),
 	  N_tr 	 (210), 	   	N_rt   	(410), 			N_rr 	(800)
 	{}
 
@@ -23,9 +23,9 @@ public:
 	Thalamic_Colum(double* Con)
 	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
 	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
-	  phi_r  (_INIT(0.0)),  x_tt 	(_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),
-	  x_rr	 (_INIT(0.0)),  y_r		(_INIT(0.0)),	h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),
-	  m_h	 (_INIT(0.0)),  m_h2	(_INIT(0.0)),  	P_h	 	(_INIT(0.0)),
+	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),  	x_rr	(_INIT(0.0)),
+	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_h	 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),
+	  P_h	 (_INIT(0.0)),
 	  N_tr 	 (Con[0]), 	   	N_rt	(Con[1]), 		N_rr	(Con[2])
 	{}
 
@@ -80,12 +80,10 @@ private:
 					Phi_tr,		// PostSP from TC population to RE population
 					Phi_rt,		// PostSP from RE population to TC population
 					Phi_rr,		// PostSP from RE population to RE population
-					phi_r,		// delayed action potential for rr connection
 					x_tt,		// derivative of Phi_tt
 					x_tr,		// derivative of Phi_tr
 					x_rt,		// derivative of Phi_rt
 					x_rr,		// derivative of Phi_rr
-					y_r,		// derivative of phi_r
 					h_T_t,		// inactivation of T channel
 					h_T_r,		// inactivation of T channel
 					m_h,		// activation of h   channel

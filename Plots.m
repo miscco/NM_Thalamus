@@ -4,11 +4,11 @@
 function Plots(T, onset)
 
 if nargin == 0
-    Con     = [400;             % N_tr
-               400;             % N_rt
-               400];            % N_rr    
+    Con     = [800;             % N_tr
+               800;             % N_rt
+               200];            % N_rr    
     T       = 20;      % duration of the simulation
-    onset   = 5;
+    onset   = 20;
 end
 
 [Vt, Vr, Cat, Car, I_T_t, I_T_r, I_h] = Thalamus(Con, T, onset);
@@ -41,12 +41,11 @@ title('RE Ca concentration'),                 xlabel('time in s'), ylabel('Ca in
 % title('TC I_{CAN} current '), xlabel('time in s'), ylabel('I_{CAN} in \muA cm^{-2}')
 % subplot(313), plot(timeaxis,I_KCa_t)
 % title('TC I_{KCa} current '), xlabel('time in s'), ylabel('I_{KCa} in \muA cm^{-2}')
-
-
+% 
 fs      = L/T;
 NFFT    = 2^nextpow2(L);
 
-[Pxx,f] = pwelch(Vt-mean(Vt), 1024, 256, NFFT, fs,'onesided');
+[Pxx,f] = pwelch(Vr-mean(Vr), 1024, 256, NFFT, fs,'onesided');
 n       = find(f<=60, 1, 'last' );
  
 figure(3)

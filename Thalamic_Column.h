@@ -7,25 +7,25 @@ using std::vector;
 
 // implementation of the cortical module after Zavaglia2006
 
-class Thalamic_Colum {
+class Thalamic_Column {
 public:
 	// Constructors
-	Thalamic_Colum(void)
-	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
-	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
-	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),  	x_rr	(_INIT(0.0)),
-	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_h	 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),
-	  P_h	 (_INIT(0.0)),
-	  N_tr 	 (210), 	   	N_rt   	(410), 			N_rr 	(800)
+	Thalamic_Column(void)
+	: Vt 	(_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
+	  Phi_tt(_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
+	  x_tt 	(_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),  	x_rr	(_INIT(0.0)),
+	  h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_KCa	(_INIT(0.0)),	m_CAN  	(_INIT(0.0)),
+	  m_h 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),	P_h		(_INIT(0.0)),
+	  N_tr 	(210), 		   	N_rt   	(410), 			N_rr 	(800)
 	{}
 
 	// Constructors
-	Thalamic_Colum(double* Con)
+	Thalamic_Column(double* Con)
 	: Vt 	 (_INIT(-80)), 	Vr 	  	(_INIT(-80)), 	Cat	  	(_INIT(Ca_0)), 	Car	  	(_INIT(Ca_0)),
 	  Phi_tt (_INIT(0.0)), 	Phi_tr 	(_INIT(0.0)), 	Phi_rt 	(_INIT(0.0)), 	Phi_rr 	(_INIT(0.0)),
 	  x_tt 	 (_INIT(0.0)), 	x_tr   	(_INIT(0.0)), 	x_rt   	(_INIT(0.0)),  	x_rr	(_INIT(0.0)),
-	  h_T_t	 (_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_h	 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),
-	  P_h	 (_INIT(0.0)),
+	  h_T_t	(_INIT(0.0)),	h_T_r  	(_INIT(0.0)),   m_KCa	(_INIT(0.0)),	m_CAN  	(_INIT(0.0)),
+	  m_h 	(_INIT(0.0)),   m_h2	(_INIT(0.0)),	P_h		(_INIT(0.0)),
 	  N_tr 	 (Con[0]), 	   	N_rt	(Con[1]), 		N_rr	(Con[2])
 	{}
 
@@ -53,6 +53,12 @@ public:
 	double 	I_T_t		(int) const;
 	double 	I_T_r		(int) const;
 
+	// KCa current
+	double 	I_KCa		(int) const;
+
+	// CAN current
+	double 	I_CAN		(int) const;
+
 	// h-type current
 	double 	I_h			(int) const;
 	double  m_inf_h		(int) const;
@@ -64,11 +70,10 @@ public:
 
 	// ODE functions
 	void 	set_RK		(int, double, double);
-	void 	set_Euler	(double);
 	void 	add_RK	 	(double);
 
 	// function to extract the data
-	friend void get_data (int, Thalamic_Colum&, _REPEAT(vector<double>&, 7));
+	friend void get_data (int, Thalamic_Column&, _REPEAT(vector<double>&, 7));
 
 private:
 	// population variables
@@ -86,9 +91,11 @@ private:
 					x_rr,		// derivative of Phi_rr
 					h_T_t,		// inactivation of T channel
 					h_T_r,		// inactivation of T channel
+					m_KCa,		// activation   of KCa channel
+					m_CAN,		// activation   of CAN channel
 					m_h,		// activation of h   channel
-					m_h2,		// activation of h   channel bound
-					P_h;		// fraction of bound calcium
+					m_h2,		// activation of h   channel bound with protein
+					P_h;		// fraction of protein bound with calcium
 
 	// connectivities
 	double			N_tr,		// TC to RE loop

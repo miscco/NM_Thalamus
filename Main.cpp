@@ -4,7 +4,7 @@
 #include "matio.h"
 
 #include "randoms.h"
-#include "Thalamic_Colum.h"
+#include "Thalamic_Column.h"
 #include "ODE.h"
 
 using std::vector;
@@ -26,7 +26,7 @@ int main(void) {
 	vector<double> u_t2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
 
 	// Initializing the populations;
-	Thalamic_Colum Col;
+	Thalamic_Column Col;
 
 	// takes the time of the simulation
 	time_t start,end;

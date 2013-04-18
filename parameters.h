@@ -59,7 +59,15 @@
 #define tau_Ca		40
 #define Ca_0		2E-4
 
+// KCa current parameters
+#define gKCa		10
+#define E_KCa		-90
+
+// CAN current parameters
+#define gCAN		1
+#define E_CAN		-20
+
 // scaling of extrinsic input
 #define s			0.1
-#define phi_st		0.0
-#define phi_inp		0.0
+#define phi_st		1.0
+#define phi_inp		1.0

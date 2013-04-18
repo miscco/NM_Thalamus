@@ -3,7 +3,7 @@
 #include "mex.h"
 #include "matrix.h"
 #include "randoms.h"
-#include "Thalamic_Colum.h"
+#include "Thalamic_Column.h"
 #include "saves.h"
 #include "ODE.h"
 using std::vector;
@@ -36,7 +36,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	vector<double> u_t2 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, phi_st, phi_inp);
 
 	// Initializing the populations;
-	Thalamic_Colum Col(Connectivity);
+	Thalamic_Column Col(Connectivity);
 
 	// setting up the data containers
 	vector<double> Vt 		(T*res);
@@ -51,7 +51,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	for (int t=0; t<Time; ++t) {
 		ODE (Col, u_t1[t], u_t2[t]);
-		//ODE2(Col, u_t1[t]);
 		if(t>=onset*res){
 		get_data(count, Col, Vt, Vr, Cat, Car, I_T_t, I_T_r, I_h);
 		++count;

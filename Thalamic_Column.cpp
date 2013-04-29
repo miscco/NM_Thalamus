@@ -1,99 +1,97 @@
+/*****************************************************************************************************/
+/***********************	cpp file of a complete thalamic nuclei		******************************/
+/*****************************************************************************************************/
 #include <cmath>
 #include "Thalamic_Column.h"
 
-// function that returns the firing rate of the exitatory population
+/*****************************************************************************************************/
+/**********************************		 Firing Rate functions 		**********************************/
+/*****************************************************************************************************/
+// TC firing rate
 double Thalamic_Column::get_Qt	(int N) const{
 	_SWITCH((Vt))
-	double q = (Qt_max + Qt_burst)/ (1 + exp(-C * (var_Vt - theta_t) / sigma_t));
+	double q = Qt_max/ (1 + exp(-C * (var_Vt - theta_t) / sigma_t));
 	return q;
 }
 
-// function that returns the firing rate of the exitatory population
+// RE firing rate
 double Thalamic_Column::get_Qr	(int N) const{
 	_SWITCH((Vr))
-	double q = (Qr_max + Qr_burst) / (1 + exp(-C * (var_Vr - theta_r) / sigma_r));
+	double q = Qr_max / (1 + exp(-C * (var_Vr - theta_r) / sigma_r));
 	return q;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
 
-// function that scales the input from TC to TC	has to be descending
+
+/*****************************************************************************************************/
+/**********************************		 weighting functions 		**********************************/
+/*****************************************************************************************************/
+// exitatory input to TC population
 double Thalamic_Column::psi_et	(int N) const{
 	_SWITCH((Vt))
 	double psi = (Vt_rev_e-var_Vt);
 	return psi;
 }
 
-// function that scales the input from RE to TC has to be ascending
+// inhibitory input to TC population
 double Thalamic_Column::psi_it	(int N) const{
 	_SWITCH((Vt))
 	double psi =-(Vt_rev_i-var_Vt);
 	return psi;
 }
 
-// function that scales the input from TC to RE	has to be descending
+// exitatory input to RE population
 double Thalamic_Column::psi_er	(int N) const{
 	_SWITCH((Vr))
 	double psi = (Vr_rev_e-var_Vr);
 	return psi;
 }
 
-// function that scales the input from RE to RE	has to be asscending
+// inhibitory input to RE population
 double Thalamic_Column::psi_ir	(int N) const{
 	_SWITCH((Vr))
 	double psi =-(Vr_rev_i-var_Vr);
 	return psi;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
 
-// activation of the T-type current in TC population
+
+/*****************************************************************************************************/
+/**********************************		 I_T gating functions 		**********************************/
+/*****************************************************************************************************/
+// infinit activation in TC population
 double Thalamic_Column::m_inf_T_t	(int N) const{
 	_SWITCH((Vt))
 	double m = 1/(1+exp(-(var_Vt+65)/7.8));
 	return m;
 }
 
-// function that returns the instant activation of the T-type current
+// infinit activation in RE population
 double Thalamic_Column::m_inf_T_r	(int N) const{
 	_SWITCH((Vr))
 	double m = 1/(1+exp(-(var_Vr+52)/7.4));
 	return m;
 }
 
-// activation time constant of the h-type current
+// activation time in TC population
 double Thalamic_Column::tau_m_T_t	(int N) const{
 	_SWITCH((Vt))
 	double tau = 0.15 * m_inf_T_t(N) *(1.7 + exp(-(var_Vt+30.8)/13.5));
 	return tau;
 }
 
-// activation time constant of the h-type current
+// activation time in RE population
 double Thalamic_Column::tau_m_T_r	(int N) const{
 	_SWITCH((Vr))
 	double tau = 0.44+0.15/( exp((var_Vr+27)/10.0) + exp(-(var_Vr+102)/15.0));
 	return tau;
 }
 
-// function that returns the instant activation of the T-type current
-// by Destexhe 1993
-double Thalamic_Column::m_inf_h	(int N) const{
-	_SWITCH((Vt))
-	double h = 1/(1+exp( (var_Vt+68.9)/6.5));
-	return h;
-}
-
-// activation time constant of the h-type current
-double Thalamic_Column::tau_m_hs	(int N) const{
-	_SWITCH((Vt))
-	double tau = exp((var_Vt + 183.6)/15.22);
-	return tau;
-}
-
-// activation time constant of the h-type current
-double Thalamic_Column::tau_m_hf	(int N) const{
-	_SWITCH((Vt))
-	double tau = exp((var_Vt + 158.6)/11.2)/(1+exp((var_Vt+75)/5.5));
-	return tau;
-}
-
-// deactivation of the T-type current for TC population
+// deactivation in TC population
 // after Zygiereqicz 2001
 double Thalamic_Column::alpha_1	(int N) const{
 	_SWITCH((Vt))
@@ -102,11 +100,11 @@ double Thalamic_Column::alpha_1	(int N) const{
 }
 
 double Thalamic_Column::alpha_2	(int N) const{
-	double a = 1/(tau_h_t(N)*(K(N) + 1));
+	double a = 1/(tau_h_T_t(N)*(K(N) + 1));
 	return a;
 }
 
-double Thalamic_Column::tau_h_t	(int N) const{
+double Thalamic_Column::tau_h_T_t	(int N) const{
 	_SWITCH((Vt))
 	double tau = 62.4/(1+exp((var_Vt+39.4)/30));
 	return tau;
@@ -118,8 +116,7 @@ double Thalamic_Column::K	(int N) const{
 	return k;
 }
 
-
-// deactivation of the T-type current for RE population
+// infinit deactivation in RE population
 // by Destexhe 1994
 double Thalamic_Column::h_inf_T_r	(int N) const{
 	_SWITCH((Vr))
@@ -127,14 +124,50 @@ double Thalamic_Column::h_inf_T_r	(int N) const{
 	return h;
 }
 
-// function that returns the instant activation of the T-type current
+// deactivation time in RE population
 // by Destexhe 1994
-double Thalamic_Column::tau_h_r	(int N) const{
+double Thalamic_Column::tau_h_T_r	(int N) const{
 	_SWITCH((Vr))
 	double tau =  22.7 + 0.27/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50));
 	return tau;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
 
+
+/*****************************************************************************************************/
+/**********************************		 I_h gating functions 		**********************************/
+/*****************************************************************************************************/
+// instant activation in TC population
+// by Destexhe 1993
+double Thalamic_Column::m_inf_h	(int N) const{
+	_SWITCH((Vt))
+	double h = 1/(1+exp( (var_Vt+68.9)/6.5));
+	return h;
+}
+
+// activation time for slow components in TC population
+double Thalamic_Column::tau_m_hs	(int N) const{
+	_SWITCH((Vt))
+	double tau = exp((var_Vt + 183.6)/15.22);
+	return tau;
+}
+
+// activation time for fast components in TC population
+double Thalamic_Column::tau_m_hf	(int N) const{
+	_SWITCH((Vt))
+	double tau = exp((var_Vt + 158.6)/11.2)/(1+exp((var_Vt+75)/5.5));
+	return tau;
+}
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
+
+
+/*****************************************************************************************************/
+/**********************************		 Current functions 			**********************************/
+/*****************************************************************************************************/
 // Leak current of TC population
 double Thalamic_Column::I_L_t	(int N) const{
 	_SWITCH((Vt))
@@ -149,14 +182,14 @@ double Thalamic_Column::I_L_r	(int N) const{
 	return I;
 }
 
-// function that returns the T-type current
+// T-type current of TC population
 double Thalamic_Column::I_T_t	(int N) const{
 	_SWITCH((Vt)(h_T_t)(m_T_t))
 	double I = gTt * pow(var_m_T_t, 3) * var_h_T_t * (var_Vt - E_T);
 	return I;
 }
 
-// function that returns the T-type current
+// T-type current of RE population
 double Thalamic_Column::I_T_r	(int N) const{
 	_SWITCH((Vr)(h_T_r)(m_T_r))
 	double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
@@ -170,20 +203,27 @@ double Thalamic_Column::I_h		(int N) const{
 	return I;
 }
 
-// KCa current of RE population
+// T-type current of TC population
 double Thalamic_Column::I_KCa	(int N) const{
 	_SWITCH((Vr)(m_KCa))
 	double I = gKCa * pow(var_m_KCa, 2) * (var_Vr - E_KCa);
 	return I;
 }
 
-// KCa current of RE population
+// T-type current of RE population
 double Thalamic_Column::I_CAN	(int N) const{
 	_SWITCH((Vr)(m_CAN))
 	double I = gCAN * pow(var_m_CAN, 2) * (var_Vr - E_CAN);
 	return I;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
 
+
+/*****************************************************************************************************/
+/**********************************		 RK noise scaling 			**********************************/
+/*****************************************************************************************************/
 // function that returns the noise to exitatory population for stochastic RK4
 double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
 	extern const double h;
@@ -191,7 +231,14 @@ double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
 	double n = s  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
 	return n;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/
 
+
+/*****************************************************************************************************/
+/**********************************		 	ODE functions 			**********************************/
+/*****************************************************************************************************/
 // function that calculates the Nth RK term
 void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 	extern const double dt;
@@ -208,7 +255,7 @@ void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 	m_T_r 	[N] = dt*(m_inf_T_r(N) - var_m_T_r)/tau_m_T_r(N);
 	h_T_t 	[N] = dt*(alpha_1(N) * ((1-var_h_T_t - var_d_T_t) - K(N) * var_h_T_t));
 	d_T_t 	[N] = dt*(alpha_2(N) * ((1-var_h_T_t - var_d_T_t) * K(N) - var_d_T_t));
-	h_T_r 	[N] = dt*(h_inf_T_r(N) - var_h_T_r)/tau_h_r	 (N);
+	h_T_r 	[N] = dt*(h_inf_T_r(N) - var_h_T_r)/tau_h_T_r	 (N);
 	m_KCa 	[N] = dt*(48 * pow(var_Car, 2) * (1 - var_m_KCa) - 0.03  * var_m_KCa);
 	m_CAN 	[N] = dt*(20 * pow(var_Car, 2) * (1 - var_m_CAN) - 0.005 * var_m_CAN);
 	m_hs 	[N] = dt*((m_inf_h(N) * (1 - var_m_hs2) - var_m_hs)/tau_m_hs(N) - k3 * var_P_h * var_m_hs + k4 * var_m_hs2);
@@ -254,3 +301,6 @@ void Thalamic_Column::add_RK(double u_t) {
 	m_hf2	[0] += (m_hf2	[1] + m_hf2		[2] * 2 + m_hf2		[3] * 2 + m_hf2		[4])/6;
 	P_h	 	[0] += (P_h		[1] + P_h		[2] * 2 + P_h		[3] * 2 + P_h		[4])/6;
 }
+/*****************************************************************************************************/
+/**********************************		 		end			 		**********************************/
+/*****************************************************************************************************/

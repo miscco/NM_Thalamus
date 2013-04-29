@@ -1,3 +1,6 @@
+/*****************************************************************************************************/
+/***********************	header file of a complete thalamic nuclei	******************************/
+/*****************************************************************************************************/
 #pragma once
 #include <cmath>
 #include <vector>
@@ -44,9 +47,9 @@ public:
 	// activation functions
 	double  m_inf_T_t	(int) const;
 	double  m_inf_T_r	(int) const;
-	double  m_inf_h		(int) const;
 	double  tau_m_T_t	(int) const;
 	double  tau_m_T_r	(int) const;
+	double  m_inf_h		(int) const;
 	double  tau_m_hs	(int) const;
 	double  tau_m_hf	(int) const;
 
@@ -55,8 +58,8 @@ public:
 	double  alpha_2		(int) const;
 	double  K			(int) const;
 	double  h_inf_T_r	(int) const;
-	double  tau_h_t		(int) const;
-	double  tau_h_r		(int) const;
+	double  tau_h_T_t	(int) const;
+	double  tau_h_T_r	(int) const;
 
 	// current functions
 	double 	I_L_t		(int) const;

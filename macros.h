@@ -1,3 +1,6 @@
+/*****************************************************************************************************/
+/******************		file that defines the macros used in the simulation		**********************/
+/*****************************************************************************************************/
 #pragma once
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
@@ -7,10 +10,9 @@
 #include <boost/preprocessor/facilities/empty.hpp>
 
 // macro for the initialization of the vectors
-#define _0		0.0, 0.0, 0.0, 0.0
 #define _INIT(x)	{x, 0.0, 0.0, 0.0, 0.0}
 
-// macros to get the respective variables for RK terms
+// macros to get the respective variables for RK evaluation
 #define _RK1(x) (x[0])
 #define _RK2(x) (x[0] + x[1] * 0.5)
 #define _RK3(x) (x[0] + x[2] * 0.5)

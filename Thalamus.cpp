@@ -1,4 +1,6 @@
-#include <ctime>
+/*****************************************************************************************************/
+/******************************	main file for mex file generation	**********************************/
+/*****************************************************************************************************/
 #include <vector>
 #include "mex.h"
 #include "matrix.h"
@@ -6,18 +8,12 @@
 #include "Thalamic_Column.h"
 #include "saves.h"
 #include "ODE.h"
-using std::vector;
 
-// Implementation of the main file for mex compiler
-// mex command is given by:
-// mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" SteynRoss.cpp Thalamic_Colum.cpp
+using std::vector;
 
 extern const int res 	= 1E4;
 extern const double dt 	= 1E3/res;
 extern const double h	= sqrt(dt);
-
-
-// simulation of the model proposed in Steyn-Ross2004
 
 // input arguments are a vector of length 8 with the connectivities and an integer setting the resolution of the grid
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
@@ -55,7 +51,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	vector<double> I_h		(T*res);
 
 	int count = 0;
-
 	for (int t=0; t<Time; ++t) {
 		ODE (Col, u_t1[t], u_t2[t]);
 		if(t>=onset*res){
@@ -64,6 +59,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		}
 	}
 
+	// output of the simulation
 	plhs[0] = getMexArray(Vt);
 	plhs[1] = getMexArray(Vr);
 	plhs[2] = getMexArray(Cat);

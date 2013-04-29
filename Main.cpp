@@ -1,22 +1,22 @@
+/*****************************************************************************************************/
+/**********************************		file for code verification	**********************************/
+/*****************************************************************************************************/
 #include <iostream>
 #include <ctime>
 #include <vector>
 #include "matio.h"
-
 #include "randoms.h"
 #include "Thalamic_Column.h"
 #include "ODE.h"
 
 using std::vector;
 
-extern const int T 		= 120;
-extern const int res 	= 1E3;
+extern const int T 		= 50;
+extern const int res 	= 1E4;
 extern const double dt 	= 1E3/res;
 extern const double h	= sqrt(dt);
 
-
-// simulation of the model proposed in Steyn-Ross2009
-
+// simulation of the thalamic model
 int main(void) {
 	// Initializing the mersenne twister.
 	MTRand mtrand;
@@ -37,8 +37,8 @@ int main(void) {
 		ODE (Col, u_t1[t], u_t2[t]);
 		//ODE2(Col, u_t1[t]);
 	}
-
 	time (&end);
+
 	// time consumed by the simulation
 	double dif = difftime(end,start);
 	std::cout << "simulation done!\n";

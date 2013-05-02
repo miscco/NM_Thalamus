@@ -85,7 +85,7 @@
 #define E_T			120
 
 // I_h current
-#define E_h			-40
+#define E_h			-43
 
 // KCa current
 #define E_KCa		-90

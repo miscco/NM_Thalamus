@@ -26,8 +26,8 @@
 #define theta_r		-45
 
 // Standard deviation for threshold in mV
-#define sigma_t		4
-#define sigma_r		4
+#define sigma_t		3
+#define sigma_r		3
 
 // Parameter for sigmoidal mapping (dimensionless)
 #define C           (3.14159265/sqrt(3))
@@ -46,15 +46,15 @@
 // Leak current
 #define gL_t		0.01
 #define gL_r		0.025
-#define gLK_t		0.04
-#define gLK_r		0.025
+#define gLK_t		0.05
+#define gLK_r		0.035
 
 // I_T current
 #define gTt			2.0
 #define gTr			1.75
 
 // I_h current
-#define gh			0.04
+#define gh			0.4
 
 // KCa current
 #define gKCa		10.05
@@ -70,10 +70,8 @@
 /**********************************		 reversal potentials 		**********************************/
 /*****************************************************************************************************/
 // synaptic inputs in mV
-#define Vt_rev_e  	0
-#define Vt_rev_i  	-80
-#define Vr_rev_e  	0
-#define Vr_rev_i  	-70
+#define V_rev_e  	0
+#define V_rev_i  	-70
 
 // Leak current
 #define E_L_t		-55
@@ -115,7 +113,7 @@
 /**********************************			noise parameters		**********************************/
 /*****************************************************************************************************/
 #define s			0.1
-#define phi_st		0.000
+#define phi_st		0.001
 #define phi_inp		0.0
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/

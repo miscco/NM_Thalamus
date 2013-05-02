@@ -31,28 +31,28 @@ double Thalamic_Column::get_Qr	(int N) const{
 // exitatory input to TC population
 double Thalamic_Column::psi_et	(int N) const{
 	_SWITCH((Vt))
-	double psi = (Vt_rev_e-var_Vt);
+	double psi = (V_rev_e-var_Vt);
 	return psi;
 }
 
 // inhibitory input to TC population
 double Thalamic_Column::psi_it	(int N) const{
 	_SWITCH((Vt))
-	double psi = (Vt_rev_i-var_Vt);
+	double psi = (V_rev_i-var_Vt);
 	return psi;
 }
 
 // exitatory input to RE population
 double Thalamic_Column::psi_er	(int N) const{
 	_SWITCH((Vr))
-	double psi = (Vr_rev_e-var_Vr);
+	double psi = (V_rev_e-var_Vr);
 	return psi;
 }
 
 // inhibitory input to RE population
 double Thalamic_Column::psi_ir	(int N) const{
 	_SWITCH((Vr))
-	double psi = (Vr_rev_i-var_Vr);
+	double psi = (V_rev_i-var_Vr);
 	return psi;
 }
 /*****************************************************************************************************/
@@ -248,7 +248,7 @@ void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 			(h_T_t)	(h_T_r)	(d_T_t)	(m_T_t)	(m_T_r)
 			(m_KCa)	(m_CAN)	(m_hs)	(m_hf)	(m_hs2)	(m_hf2)	(P_h))
 	Vt	  	[N] = dt/tau_t * ( psi_et(N) * var_Phi_tt + psi_it(N) * var_Phi_rt  - c * (I_L_t(N) + I_T_t(N) + I_h(N)));
-	Vr	  	[N] = dt/tau_r * ( psi_er(N) * var_Phi_tr + psi_ir(N) * var_Phi_rr 	- c * (I_L_r(N) + I_T_r(N)));
+	Vr	  	[N] = dt/tau_r * ( psi_er(N) * var_Phi_tr + psi_ir(N) * var_Phi_rr 	- c * (I_L_r(N) + I_T_r(N) + I_KCa(N) + I_CAN(N)));
 	Cat		[N] = dt*(alpha_Cat * I_T_t(N) - 0.7   * (var_Cat - Ca_0));
 	Car		[N] = dt*(alpha_Car * I_T_r(N) - 0.005 * var_Car/(0.005 + var_Car));
 	m_T_t 	[N] = dt*(m_inf_T_t(N) - var_m_T_t)/tau_m_T_t(N);

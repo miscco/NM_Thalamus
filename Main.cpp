@@ -4,7 +4,6 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
-#include "matio.h"
 #include "randoms.h"
 #include "Thalamic_Column.h"
 #include "ODE.h"

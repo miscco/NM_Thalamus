@@ -36,9 +36,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1785383603" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.782864723" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.flags.712983263" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-std=c++0x " valueType="string"/>
-								<option id="gnu.cpp.link.option.libs.1849787926" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="matio"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1849787926" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1171029032" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

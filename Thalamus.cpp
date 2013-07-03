@@ -11,7 +11,7 @@
 
 using std::vector;
 
-extern const int res 	= 1E4;
+extern const int res 	= 5E4;
 extern const double dt 	= 1E3/res;
 extern const double h	= sqrt(dt);
 

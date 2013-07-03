@@ -6,15 +6,16 @@
 /**********************************		 physical properties 		**********************************/
 /*****************************************************************************************************/
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_t 		50
-#define tau_r 		50
+#define tau_t 		1
+#define tau_r 		1
 
 // current scaling in cm^2
-#define c			50.
+#define c			1.
 
 // Calcium concentration
-#define alpha_Cat	-0.0001
-#define alpha_Car	-0.00052
+#define alpha_Cat	-52E-6			// influx per spike in nmol
+#define alpha_Car	-50E-6			// influx per spike in nmol
+#define tau_Cat		5				// calcium time contant in ms
 #define Ca_0		2E-4
 
 // Maximum firing rate in ms^-1
@@ -26,15 +27,15 @@
 #define theta_r		-45
 
 // Standard deviation for threshold in mV
-#define sigma_t		3
-#define sigma_r		3
+#define sigma_t		9
+#define sigma_r		9
 
 // Parameter for sigmoidal mapping (dimensionless)
 #define C           (3.14159265/sqrt(3))
 
 // PSP rise time in ms^-1
-#define gamma_t		70E-3
-#define gamma_r		80E-3
+#define gamma_t		20E-3
+#define gamma_r		100E-3
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/
 /*****************************************************************************************************/
@@ -45,16 +46,20 @@
 /*****************************************************************************************************/
 // Leak current
 #define gL_t		0.01
-#define gL_r		0.025
+#define gL_r		0.05
 #define gLK_t		0.05
-#define gLK_r		0.035
+#define gLK_r		0.03
+
+// synaptic current
+#define g_AMPA		0.1
+#define g_GABA		0.15
 
 // I_T current
-#define gTt			2.0
-#define gTr			1.75
+#define gTt			2.2
+#define gTr			2
 
 // I_h current
-#define gh			0.4
+#define gh			0.1
 
 // KCa current
 #define gKCa		10.05
@@ -74,16 +79,16 @@
 #define V_rev_i  	-70
 
 // Leak current
-#define E_L_t		-55
-#define E_L_r		-60
-#define E_LK_t		-100
+#define E_L_t		-70
+#define E_L_r		-55
+#define E_LK_t		-95
 #define E_LK_r		-95
 
 // I_T current
 #define E_T			120
 
 // I_h current
-#define E_h			-43
+#define E_h			-40
 
 // KCa current
 #define E_KCa		-90
@@ -99,7 +104,7 @@
 /**********************************		I_h activation parameters	**********************************/
 /*****************************************************************************************************/
 #define k1			2.5E7
-#define k2			4E-4
+#define k2			8E-4
 #define k3			1E-1
 #define k4			1E-3
 #define n_P			4
@@ -113,7 +118,7 @@
 /**********************************			noise parameters		**********************************/
 /*****************************************************************************************************/
 #define s			0.1
-#define phi_st		0.001
+#define phi_st		5E-3
 #define phi_inp		0.0
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/

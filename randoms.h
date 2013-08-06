@@ -59,7 +59,7 @@ vector<double> rand_inp (MTRand mtrand, int res, int sec, int onset, int f, int 
 			dW[i] = mtrand.randNorm(mean,sqrt(sd));
 			break;
 		case 1:
-			dW[i] = mtrand.randNorm(str,sqrt(sd));
+			dW[i] = mtrand.randNorm(mean + str,sqrt(sd));
 			break;
 		}
 	}

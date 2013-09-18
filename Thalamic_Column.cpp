@@ -154,14 +154,28 @@ double Thalamic_Column::tau_m_h	(int N) const{
 // Leak current of TC population
 double Thalamic_Column::I_L_t	(int N) const{
 	_SWITCH((Vt))
-	double I = gL_t * (var_Vt - E_L_t) + gLK_t * (var_Vt - E_LK_t);
+	double I = gL_t * (var_Vt - E_L_t);
+	return I;
+}
+
+// Potassium leak current of TC population
+double Thalamic_Column::I_LK_t	(int N) const{
+	_SWITCH((Vt))
+	double I = gLK_t * (var_Vt - E_LK_t);
 	return I;
 }
 
 // Leak current of RE population
 double Thalamic_Column::I_L_r	(int N) const{
 	_SWITCH((Vr))
-	double I = gL_r * (var_Vr - E_L_r) + gLK_r * (var_Vr - E_LK_r);
+	double I = gL_r * (var_Vr - E_L_r);
+	return I;
+}
+
+// Potassium leak current of RE population
+double Thalamic_Column::I_LK_r	(int N) const{
+	_SWITCH((Vr))
+	double I = gLK_r * (var_Vr - E_LK_r);
 	return I;
 }
 
@@ -174,8 +188,8 @@ double Thalamic_Column::I_T_t	(int N) const{
 
 // T-type current of RE population
 double Thalamic_Column::I_T_r	(int N) const{
-	_SWITCH((Vr)(h_T_r))
-	double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
+	_SWITCH((Vr)(h_T_r)(m_T_r))
+	double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
 	return I;
 }
 
@@ -211,7 +225,7 @@ double Thalamic_Column::I_CAN	(int N) const{
 double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
 	extern const double h;
 	extern const vector<double> B1, B2;
-	double n = s  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
+	double n = 1  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
 	return n;
 }
 /*****************************************************************************************************/
@@ -230,8 +244,8 @@ void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 			(x_tt)	(x_tr)	(x_rt)	(x_rr)
 			(m_T_t)	(m_T_r)	(h_T_t)	(h_T_r)
 			(m_KCa)	(m_CAN)	(m_h)	(m_h2)	(P_h))
-	Vt	  	[N] = dt/tau_t * (-I_L_t(N) - I_et(N) - I_it(N) - I_T_t(N) - I_h(N));
-	Vr	  	[N] = dt/tau_r * (-I_L_r(N) - I_er(N) - I_ir(N) - I_T_r(N));
+	Vt	  	[N] = dt*(-(I_L_t(N) + I_et(N) + I_it(N))/tau_t - (I_LK_t(N) + I_T_t(N) + I_h(N)));
+	Vr	  	[N] = dt*(-(I_L_r(N) + I_er(N) + I_ir(N))/tau_r - (I_LK_r(N) + I_T_r(N)));
 	Cat		[N] = dt*(alpha_Cat * I_T_t(N) - (var_Cat - Ca_0)/tau_Cat);
 	Car		[N] = dt*(alpha_Car * I_T_r(N) - 0.005 * var_Car/(0.005 + var_Car));
 	m_T_t 	[N] = dt*(m_inf_T_t(N) - var_m_T_t)/tau_m_T_t(N);
@@ -264,7 +278,7 @@ void Thalamic_Column::add_RK(double u_t) {
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
 	Phi_rr	[0] += (Phi_rr	[1] + Phi_rr	[2] * 2 + Phi_rr	[3] * 2 + Phi_rr	[4])/6;
-	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * s * h * u_t;
+	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * h * u_t;
 	x_tr  	[0] += (x_tr	[1] + x_tr		[2] * 2 + x_tr		[3] * 2 + x_tr		[4])/6;
 	x_rt  	[0] += (x_rt	[1] + x_rt		[2] * 2 + x_rt		[3] * 2 + x_rt		[4])/6;
 	x_rr  	[0] += (x_rr	[1] + x_rr		[2] * 2 + x_rr		[3] * 2 + x_rr		[4])/6;

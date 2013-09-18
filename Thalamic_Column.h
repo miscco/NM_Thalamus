@@ -61,6 +61,8 @@ public:
 	// current functions
 	double 	I_L_t		(int) const;
 	double 	I_L_r		(int) const;
+	double 	I_LK_t		(int) const;
+	double 	I_LK_r		(int) const;
 	double 	I_T_t		(int) const;
 	double 	I_T_r		(int) const;
 	double 	I_h			(int) const;

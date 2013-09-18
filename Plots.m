@@ -4,7 +4,7 @@
 function Plots(T, onset)
 
 if nargin == 0
-    Con     = [3.5;             % N_tr
+    Con     = [3;             % N_tr
                    4;             % N_rt
                    4];            % N_rr    
     T       = 40;      % duration of the simulation

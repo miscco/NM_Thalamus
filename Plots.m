@@ -4,10 +4,10 @@
 function Plots(T, onset)
 
 if nargin == 0
-    Con     = [3;             % N_tr
-                   4;             % N_rt
-                   4];            % N_rr    
-    T       = 40;      % duration of the simulation
+    Con     = [10;             % N_tr
+                   10;             % N_rt
+                   40];            % N_rr    
+    T       = 30;      % duration of the simulation
     onset   = 10;
 end
 
@@ -51,7 +51,7 @@ title('RE Ca concentration'),                 xlabel('time in s'), ylabel('Ca in
 % title('TC I_{h} current '), xlabel('time in s'), ylabel('I_{h} in \muA cm^{-2}')
 % subplot(313), plot(timeaxis,Phi_rt)
 % title('RE input to TC'),    xlabel('time in s'), ylabel('\Phi_{rt} in \muA cm^{-2}')
-
+% 
 fs      = L/T;
 NFFT    = 2^nextpow2(L);
 
@@ -61,3 +61,5 @@ n       = find(f<=60, 1, 'last' );
 figure(3)
 plot(f(1:n),Pxx(1:n))
 title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')
+
+%save('Thalamus.mat','Vt','Vr')

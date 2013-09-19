@@ -44,8 +44,8 @@
 // Leak current
 #define gL_t		0.02
 #define gL_r		0.05
-#define gLK_t		0.04
-#define gLK_r		0.03
+#define gLK_t		0.02
+#define gLK_r		0.02
 
 // synaptic current
 #define g_AMPA		0.1
@@ -56,7 +56,7 @@
 #define gTr			2
 
 // I_h current
-#define gh			0.1
+#define gh			0.07
 
 // KCa current
 #define gKCa		10.05

@@ -4,8 +4,8 @@
 function Plots(T, onset)
 
 if nargin == 0
-    Con     = [10;             % N_tr
-                   10;             % N_rt
+    Con     = [08;             % N_tr
+                   20;             % N_rt
                    40];            % N_rr    
     T       = 30;      % duration of the simulation
     onset   = 10;
@@ -16,21 +16,21 @@ end
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);
 
-% figure(1)
-% subplot(211), plot(timeaxis,Vt)
-% title('Exitatory membrane voltage'), xlabel('time in s'), ylabel('Vt in mV')
-% subplot(212), plot(timeaxis,Vr)
-% title('Inhibitory membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
-
 figure(1)
-subplot(411), plot(timeaxis, Vt)
-title('Thalamic relay membrane voltage'),  xlabel('time in s'), ylabel('V_{t} in mV')
-subplot(412), plot(timeaxis, Vr)
-title('Thalamic reticular membrane voltage'),  xlabel('time in s'), ylabel('V_{r} in mV')
-subplot(413), plot(timeaxis, Cat)
-title('TC Ca concentration'),                 xlabel('time in s'), ylabel('Ca in \muM')
-subplot(414), plot(timeaxis, Car)
-title('RE Ca concentration'),                 xlabel('time in s'), ylabel('Ca in \muM')
+subplot(211), plot(timeaxis,Vt)
+title('Exitatory membrane voltage'), xlabel('time in s'), ylabel('Vt in mV')
+subplot(212), plot(timeaxis,Vr)
+title('Inhibitory membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
+
+% figure(1)
+% subplot(411), plot(timeaxis, Vt)
+% title('Thalamic relay membrane voltage'),  xlabel('time in s'), ylabel('V_{t} in mV')
+% subplot(412), plot(timeaxis, Vr)
+% title('Thalamic reticular membrane voltage'),  xlabel('time in s'), ylabel('V_{r} in mV')
+% subplot(413), plot(timeaxis, Cat)
+% title('TC Ca concentration'),                 xlabel('time in s'), ylabel('Ca in \muM')
+% subplot(414), plot(timeaxis, Car)
+% title('RE Ca concentration'),                 xlabel('time in s'), ylabel('Ca in \muM')
 
 %exportfig(gcf, 'TC_delta.png', 'Format', 'png', 'height', 11, 'Color', 'rgb', 'FontMode', 'fixed', 'FontSize', 22)
 % 

@@ -62,63 +62,66 @@ double Thalamic_Column::I_ir	(int N) const{
 /*****************************************************************************************************/
 /**********************************		 I_T gating functions 		**********************************/
 /*****************************************************************************************************/
-// infinit activation in TC population
+// instant activation in TC population
+// after Destexhe 1996
 double Thalamic_Column::m_inf_T_t	(int N) const{
 	_SWITCH((Vt))
 	double m = 1/(1+exp(-(var_Vt+59)/6.2));
 	return m;
 }
 
-// activation time in TC population
-double Thalamic_Column::tau_m_T_t	(int N) const{
-	_SWITCH((Vt))
-	double tau = (0.612 + 1 /(exp(-(var_Vt + 132) / 16.7) + exp((var_Vt + 16.8)/18.2)))/4.54;
-	return tau;
+// instant activation in RE population
+double Thalamic_Column::m_inf_T_r	(int N) const{
+	_SWITCH((Vr))
+	double m = 1/(1+exp(-(var_Vr+52)/7.2));
+	return m;
 }
 
-// infinit deactivation in TC population
-// by Destexhe 1994
+// instant deactivation in TC population
+// after Destexhe 1996
 double Thalamic_Column::h_inf_T_t	(int N) const{
 	_SWITCH((Vt))
 	double h = 1/(1+exp( (var_Vt+81)/4));
 	return h;
 }
 
-// deactivation time in RE population
-// by Destexhe 1994
-double Thalamic_Column::tau_h_T_t	(int N) const{
-	_SWITCH((Vt))
-	double tau =  (30.8 + (211.4 + exp((var_Vt+109.2)/5))/(1 + exp((var_Vt+82)/3.2)))/3.7;
-	return tau;
-}
-
-// infinit activation in RE population
-double Thalamic_Column::m_inf_T_r	(int N) const{
-	_SWITCH((Vr))
-	double m = 1/(1+exp(-(var_Vr+50)/7.2));
-	return m;
-}
-
-// activation time in RE population
-double Thalamic_Column::tau_m_T_r	(int N) const{
-	_SWITCH((Vr))
-	double tau = 0.44+0.15/( exp((var_Vr+27)/10.0) + exp(-(var_Vr+102)/15.0));
-	return tau;
-}
-
-// infinit deactivation in RE population
-// by Destexhe 1994
+// instant deactivation in RE population
+// after Destexhe 1996
 double Thalamic_Column::h_inf_T_r	(int N) const{
 	_SWITCH((Vr))
-	double h = 1/(1+exp( (var_Vr+78)/5));
+	double h = 1/(1+exp( (var_Vr+80)/5));
 	return h;
 }
 
+// activation time in TC population
+// after Bazhenov 1998
+double Thalamic_Column::tau_m_T_t	(int N) const{
+	_SWITCH((Vt))
+	double tau = (0.612 + 1 /(exp(-(var_Vt + 132) / 16.7) + exp((var_Vt + 16.8)/18.2)))/pow(3,1.2);
+	return tau;
+}
+
+// activation time in RE population
+// after Destexhe 1996
+double Thalamic_Column::tau_m_T_r	(int N) const{
+	_SWITCH((Vr))
+	double tau = (1 + 0.33/( exp((var_Vr+27)/10.0) + exp(-(var_Vr+102)/15.0)))/pow(2.5, 1.2);
+	return tau;
+}
+
 // deactivation time in RE population
-// by Destexhe 1994
+// after Destexhe 1996
+double Thalamic_Column::tau_h_T_t	(int N) const{
+	_SWITCH((Vt))
+	double tau =  (30.8 + (211.4 + exp((var_Vt+115.2)/5))/(1 + exp((var_Vt+86)/3.2)))/pow(3, 1.2);
+	return tau;
+}
+
+// deactivation time in RE population
+// after Destexhe 1996
 double Thalamic_Column::tau_h_T_r	(int N) const{
 	_SWITCH((Vr))
-	double tau =  22.7 + 0.27/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50));
+	double tau =  (85 + 1/(exp((var_Vr+48)/4) + exp(-(var_Vr+407)/50)))/pow(3, 1.2);
 	return tau;
 }
 /*****************************************************************************************************/
@@ -130,7 +133,7 @@ double Thalamic_Column::tau_h_T_r	(int N) const{
 /**********************************		 I_h gating functions 		**********************************/
 /*****************************************************************************************************/
 // instant activation in TC population
-// by Destexhe 1993
+// after Destexhe 1993
 double Thalamic_Column::m_inf_h	(int N) const{
 	_SWITCH((Vt))
 	double h = 1/(1+exp( (var_Vt+75)/5.5));
@@ -138,6 +141,7 @@ double Thalamic_Column::m_inf_h	(int N) const{
 }
 
 // activation time for slow components in TC population
+// after Destexhe 1993
 double Thalamic_Column::tau_m_h	(int N) const{
 	_SWITCH((Vt))
 	double tau = 1. / (exp(-14.59 - 0.086 * var_Vt) + exp(-1.87 + 0.07 * var_Vt));
@@ -181,7 +185,8 @@ double Thalamic_Column::I_LK_r	(int N) const{
 
 // T-type current of TC population
 double Thalamic_Column::I_T_t	(int N) const{
-	_SWITCH((Vt)(h_T_t))
+	_SWITCH((Vt)(h_T_t)(m_T_t))
+	//double I = gTt * pow(var_m_T_t, 2) * var_h_T_t * (var_Vt - E_T);
 	double I = gTt * pow(m_inf_T_t(N), 2) * var_h_T_t * (var_Vt - E_T);
 	return I;
 }
@@ -189,7 +194,8 @@ double Thalamic_Column::I_T_t	(int N) const{
 // T-type current of RE population
 double Thalamic_Column::I_T_r	(int N) const{
 	_SWITCH((Vr)(h_T_r)(m_T_r))
-	double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
+	//double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
+	double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
 	return I;
 }
 

@@ -185,7 +185,7 @@ double Thalamic_Column::I_LK_r	(int N) const{
 
 // T-type current of TC population
 double Thalamic_Column::I_T_t	(int N) const{
-	_SWITCH((Vt)(h_T_t)(m_T_t))
+	_SWITCH((Vt)(h_T_t))
 	//double I = gTt * pow(var_m_T_t, 2) * var_h_T_t * (var_Vt - E_T);
 	double I = gTt * pow(m_inf_T_t(N), 2) * var_h_T_t * (var_Vt - E_T);
 	return I;
@@ -194,8 +194,8 @@ double Thalamic_Column::I_T_t	(int N) const{
 // T-type current of RE population
 double Thalamic_Column::I_T_r	(int N) const{
 	_SWITCH((Vr)(h_T_r)(m_T_r))
-	//double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
-	double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
+	double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
+	//double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
 	return I;
 }
 

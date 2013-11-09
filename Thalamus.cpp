@@ -24,15 +24,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	double* Connectivity 	= mxGetPr (prhs[0]);
 	const int T				= (int)(mxGetScalar(prhs[1]));
 	const int onset			= (int)(mxGetScalar(prhs[2]));
+	double* var_stim	 	= mxGetPr (prhs[3]);
 
-	const int Time 	= (T+onset)*res;
+	const int Time 			= (T+onset)*res;
 
-	// creating the random input
+	// random input
 	vector<double> u_t1 = rand_var(mtrand, (T+onset)*res, phi_st, phi_st);
 	vector<double> u_t2 = rand_var(mtrand, (T+onset)*res, phi_st, phi_st);
 
-	//vector<double> u_t1 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, phi_st, phi_inp);
-	//vector<double> u_t2 = rand_inp(mtrand, res, T, onset, 5, 1E2, phi_st, phi_st, phi_inp);
+	// random input with phase independent stimulation
+	//vector<double> u_t1 = rand_inp(mtrand, Time, mphi_st, dphi_st, onset, var_stim);
+	//vector<double> u_t2 = rand_inp(mtrand, Time, mphi_st, dphi_st, onset, var_stim);
+
 
 	// Initializing the populations;
 	Thalamic_Column Col(Connectivity);

@@ -73,7 +73,7 @@ public:
 	void 	add_RK	 	(double);
 
 	// function to extract the data
-	friend void get_data (int, Thalamic_Column&, _REPEAT(vector<double>&, 8));
+	friend void get_data (int, Thalamic_Column&, _REPEAT(vector<double>&, 2));
 
 private:
 	// population variables

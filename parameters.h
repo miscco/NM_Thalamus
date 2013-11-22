@@ -6,7 +6,7 @@
 /**********************************		 physical properties 		**********************************/
 /*****************************************************************************************************/
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_t 		10
+#define tau_t 		50
 #define tau_r 		10
 
 // Calcium concentration
@@ -41,7 +41,7 @@
 /**********************************		 	conductivities 			**********************************/
 /*****************************************************************************************************/
 // Leak current
-#define gL_t		0.2
+#define gL_t		1
 #define gL_r		1
 #define gLK_t		0.02
 #define gLK_r		0.03

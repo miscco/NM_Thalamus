@@ -31,27 +31,27 @@ double Thalamic_Column::get_Qr	(int N) const{
 // excitatory input to TC population
 double Thalamic_Column::I_et	(int N) const{
 	_SWITCH((Vt)(Phi_tt))
-	double psi = g_AMPA * var_Phi_tt * (var_Vt - V_rev_e);
+	double psi = var_Phi_tt * (var_Vt - V_rev_e);
 	return psi;
 }
 
 // inhibitory input to TC population
 double Thalamic_Column::I_it	(int N) const{
 	_SWITCH((Vt)(Phi_rt))
-	double psi = g_GABA * var_Phi_rt * (var_Vt - V_rev_i);
+	double psi = var_Phi_rt * (var_Vt - V_rev_i);
 	return psi;
 }
 // excitatory input to RE population
 double Thalamic_Column::I_er	(int N) const{
 	_SWITCH((Vr)(Phi_tr))
-	double psi = g_AMPA * var_Phi_tr * (var_Vr - V_rev_e);
+	double psi = var_Phi_tr * (var_Vr - V_rev_e);
 	return psi;
 }
 
 // inhibitory input to RE population
 double Thalamic_Column::I_ir	(int N) const{
 	_SWITCH((Vr)(Phi_rr))
-	double psi = g_GABA * var_Phi_rr * (var_Vr - V_rev_i);
+	double psi = var_Phi_rr * (var_Vr - V_rev_i);
 	return psi;
 }
 /*****************************************************************************************************/
@@ -165,7 +165,7 @@ double Thalamic_Column::I_L_t	(int N) const{
 // Potassium leak current of TC population
 double Thalamic_Column::I_LK_t	(int N) const{
 	_SWITCH((Vt))
-	double I = gLK_t * (var_Vt - E_LK_t);
+	double I = gLK_t * (var_Vt - E_K);
 	return I;
 }
 
@@ -179,7 +179,7 @@ double Thalamic_Column::I_L_r	(int N) const{
 // Potassium leak current of RE population
 double Thalamic_Column::I_LK_r	(int N) const{
 	_SWITCH((Vr))
-	double I = gLK_r * (var_Vr - E_LK_r);
+	double I = gLK_r * (var_Vr - E_K);
 	return I;
 }
 

@@ -6,8 +6,8 @@
 /**********************************		 physical properties 		**********************************/
 /*****************************************************************************************************/
 // Time constants for exhibitory and inhibitory neurons in ms
-#define tau_t 		1
-#define tau_r 		1
+#define tau_t 		10
+#define tau_r 		10
 
 // Calcium concentration
 #define alpha_Cat	-52E-6			// influx per spike in nmol
@@ -42,14 +42,10 @@
 /**********************************		 	conductivities 			**********************************/
 /*****************************************************************************************************/
 // Leak current
-#define gL_t		0.02
-#define gL_r		0.05
+#define gL_t		0.2
+#define gL_r		1
 #define gLK_t		0.02
-#define gLK_r		0.02
-
-// synaptic current
-#define g_AMPA		0.1
-#define g_GABA		0.15
+#define gLK_r		0.03
 
 // I_T current
 #define gTt			2.2
@@ -76,10 +72,9 @@
 #define V_rev_i  	-70
 
 // Leak current
-#define E_L_t		-70
+#define E_L_t		-60
 #define E_L_r		-55
-#define E_LK_t		-95
-#define E_LK_r		-95
+#define E_K			-100
 
 // I_T current
 #define E_T			120
@@ -114,7 +109,8 @@
 /*****************************************************************************************************/
 /**********************************			noise parameters		**********************************/
 /*****************************************************************************************************/
-#define phi_st		0.5E-3
+#define mphi_st		0.0E-3
+#define dphi_st		0.5E-3
 #define phi_inp		0.0
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/

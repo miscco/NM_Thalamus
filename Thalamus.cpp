@@ -29,8 +29,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	const int Time 			= (T+onset)*res;
 
 	// random input
-	vector<double> u_t1 = rand_var(mtrand, (T+onset)*res, phi_st, phi_st);
-	vector<double> u_t2 = rand_var(mtrand, (T+onset)*res, phi_st, phi_st);
+	vector<double> u_t1 = rand_var(mtrand, (T+onset)*res, mphi_st, dphi_st);
+	vector<double> u_t2 = rand_var(mtrand, (T+onset)*res, mphi_st, dphi_st);
 
 	// random input with phase independent stimulation
 	//vector<double> u_t1 = rand_inp(mtrand, Time, mphi_st, dphi_st, onset, var_stim);

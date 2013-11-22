@@ -10,9 +10,8 @@
 #define tau_r 		10
 
 // Calcium concentration
-#define alpha_Cat	-52E-6			// influx per spike in nmol
-#define alpha_Car	-50E-6			// influx per spike in nmol
-#define tau_Cat		5				// calcium time contant in ms
+#define alpha_Ca	-52E-6			// influx per spike in nmol
+#define tau_Ca		5				// calcium time contant in ms
 #define Ca_0		2E-4
 
 // Maximum firing rate in ms^-1
@@ -53,12 +52,6 @@
 
 // I_h current
 #define gh			0.07
-
-// KCa current
-#define gKCa		10.05
-
-// CAN current
-#define gCAN		1
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/
 /*****************************************************************************************************/
@@ -81,12 +74,6 @@
 
 // I_h current
 #define E_h			-40
-
-// KCa current
-#define E_KCa		-90
-
-// CAN current
-#define E_CAN		-20
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/
 /*****************************************************************************************************/

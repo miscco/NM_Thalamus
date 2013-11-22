@@ -5,13 +5,13 @@ function Plots(T, onset)
 
 if nargin == 0
     Con     = [10;             % N_tr
-                   20;             % N_rt
-                   40];            % N_rr    
+               15;             % N_rt
+               30];            % N_rr    
     T       = 30;      % duration of the simulation
     onset   = 10;
 end
 
-[Vt, Vr, Cat, Car, Phi_tr, Phi_rt, I_T_t, I_T_r, I_KCa, I_CAN, I_h] = Thalamus(Con, T, onset);
+[Vt, Vr, Ca, Phi_tr, Phi_rt, I_T_t, I_T_r, I_h] = Thalamus(Con, T, onset);
 
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);

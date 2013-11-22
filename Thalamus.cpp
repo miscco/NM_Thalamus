@@ -43,21 +43,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	// setting up the data containers
 	vector<double> Vt 		(T*res);
 	vector<double> Vr 		(T*res);
-	vector<double> Cat	 	(T*res);
-	vector<double> Car	 	(T*res);
+	vector<double> Ca	 	(T*res);
 	vector<double> Phi_tr 	(T*res);
 	vector<double> Phi_rt	(T*res);
 	vector<double> I_T_t	(T*res);
 	vector<double> I_T_r	(T*res);
-	vector<double> I_KCa	(T*res);
-	vector<double> I_CAN	(T*res);
 	vector<double> I_h		(T*res);
 
 	int count = 0;
 	for (int t=0; t<Time; ++t) {
 		ODE (Col, u_t1[t], u_t2[t]);
 		if(t>=onset*res){
-			get_data(count, Col, Vt, Vr, Cat, Car, Phi_tr, Phi_rt, I_T_t, I_T_r, I_KCa, I_CAN, I_h);
+			get_data(count, Col, Vt, Vr, Ca, Phi_tr, Phi_rt, I_T_t, I_T_r, I_h);
 			++count;
 		}
 	}
@@ -65,14 +62,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	// output of the simulation
 	plhs[0] = getMexArray(Vt);
 	plhs[1] = getMexArray(Vr);
-	plhs[2] = getMexArray(Cat);
-	plhs[3] = getMexArray(Car);
-	plhs[4] = getMexArray(Phi_tr);
-	plhs[5] = getMexArray(Phi_rt);
-	plhs[6] = getMexArray(I_T_t);
-	plhs[7] = getMexArray(I_T_r);
-	plhs[8] = getMexArray(I_KCa);
-	plhs[9] = getMexArray(I_CAN);
-	plhs[10]= getMexArray(I_h);
+	plhs[2] = getMexArray(Ca);
+	plhs[3] = getMexArray(Phi_tr);
+	plhs[4] = getMexArray(Phi_rt);
+	plhs[5] = getMexArray(I_T_t);
+	plhs[6] = getMexArray(I_T_r);
+	plhs[7] = getMexArray(I_h);
 return;
 }

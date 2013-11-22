@@ -193,9 +193,9 @@ double Thalamic_Column::I_T_t	(int N) const{
 
 // T-type current of RE population
 double Thalamic_Column::I_T_r	(int N) const{
-	_SWITCH((Vr)(h_T_r)(m_T_r))
-	double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
-	//double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
+	_SWITCH((Vr)(h_T_r))
+	//double I = gTr * pow(var_m_T_r, 2) * var_h_T_r * (var_Vr - E_T);
+	double I = gTr * pow(m_inf_T_r(N), 2) * var_h_T_r * (var_Vr - E_T);
 	return I;
 }
 
@@ -203,20 +203,6 @@ double Thalamic_Column::I_T_r	(int N) const{
 double Thalamic_Column::I_h		(int N) const{
 	_SWITCH((Vt)(m_h)(m_h2))
 	double I = gh * (var_m_h + g_inc * var_m_h2) * (var_Vt - E_h);
-	return I;
-}
-
-// T-type current of TC population
-double Thalamic_Column::I_KCa	(int N) const{
-	_SWITCH((Vr)(m_KCa))
-	double I = gKCa * pow(var_m_KCa, 2) * (var_Vr - E_KCa);
-	return I;
-}
-
-// T-type current of RE population
-double Thalamic_Column::I_CAN	(int N) const{
-	_SWITCH((Vr)(m_CAN))
-	double I = gCAN * pow(var_m_CAN, 2) * (var_Vr - E_CAN);
 	return I;
 }
 /*****************************************************************************************************/
@@ -245,24 +231,21 @@ double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
 // function that calculates the Nth RK term
 void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 	extern const double dt;
-	_SWITCH((Cat)	(Car)
+	_SWITCH((Ca)
 			(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)
 			(x_tt)	(x_tr)	(x_rt)	(x_rr)
 			(m_T_t)	(m_T_r)	(h_T_t)	(h_T_r)
-			(m_KCa)	(m_CAN)	(m_h)	(m_h2)	(P_h))
+			(m_h)	(m_h2)	(P_h))
 	Vt	  	[N] = dt*(-(I_L_t(N) + I_et(N) + I_it(N))/tau_t - (I_LK_t(N) + I_T_t(N) + I_h(N)));
 	Vr	  	[N] = dt*(-(I_L_r(N) + I_er(N) + I_ir(N))/tau_r - (I_LK_r(N) + I_T_r(N)));
-	Cat		[N] = dt*(alpha_Cat * I_T_t(N) - (var_Cat - Ca_0)/tau_Cat);
-	Car		[N] = dt*(alpha_Car * I_T_r(N) - 0.005 * var_Car/(0.005 + var_Car));
+	Ca		[N] = dt*(alpha_Ca   * I_T_t(N) - (var_Ca - Ca_0)/tau_Ca);
 	m_T_t 	[N] = dt*(m_inf_T_t(N) - var_m_T_t)/tau_m_T_t(N);
 	m_T_r 	[N] = dt*(m_inf_T_r(N) - var_m_T_r)/tau_m_T_r(N);
 	h_T_t 	[N] = dt*(h_inf_T_t(N) - var_h_T_t)/tau_h_T_t(N);
 	h_T_r 	[N] = dt*(h_inf_T_r(N) - var_h_T_r)/tau_h_T_r(N);
-	m_KCa 	[N] = dt*(48 * pow(var_Car, 2) * (1 - var_m_KCa) - 0.03  * var_m_KCa);
-	m_CAN 	[N] = dt*(20 * pow(var_Car, 2) * (1 - var_m_CAN) - 0.005 * var_m_CAN);
 	m_h 	[N] = dt*((m_inf_h(N) * (1 - var_m_h2) - var_m_h)/tau_m_h(N) - k3 * var_P_h * var_m_h + k4 * var_m_h2);
 	m_h2 	[N] = dt*(k3   * var_P_h			 * 	    var_m_h  	- k4   * var_m_h2);
-	P_h		[N] = dt*(k1   * pow(var_Cat, n_P) 	 * (1 - var_P_h) 	- k2   * var_P_h);
+	P_h		[N] = dt*(k1   * pow(var_Ca, n_P) 	 * (1 - var_P_h) 	- k2   * var_P_h);
 	Phi_tt	[N] = dt*(var_x_tt);
 	Phi_tr	[N] = dt*(var_x_tr);
 	Phi_rt	[N] = dt*(var_x_rt);
@@ -278,8 +261,7 @@ void Thalamic_Column::add_RK(double u_t) {
 	extern const double h;
 	Vt	  	[0] += (Vt		[1] + Vt		[2] * 2 + Vt		[3] * 2 + Vt		[4])/6;
 	Vr	  	[0] += (Vr		[1] + Vr		[2] * 2 + Vr		[3] * 2 + Vr		[4])/6;
-	Cat	  	[0] += (Cat		[1] + Cat		[2] * 2 + Cat		[3] * 2 + Cat		[4])/6;
-	Car	  	[0] += (Car		[1] + Car		[2] * 2 + Car		[3] * 2 + Car		[4])/6;
+	Ca	  	[0] += (Ca		[1] + Ca		[2] * 2 + Ca		[3] * 2 + Ca		[4])/6;
 	Phi_tt	[0] += (Phi_tt	[1] + Phi_tt	[2] * 2 + Phi_tt	[3] * 2 + Phi_tt	[4])/6;
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
@@ -292,8 +274,6 @@ void Thalamic_Column::add_RK(double u_t) {
 	m_T_r 	[0] += (m_T_r	[1] + m_T_r		[2] * 2 + m_T_r		[3] * 2 + m_T_r		[4])/6;
 	h_T_t 	[0] += (h_T_t	[1] + h_T_t		[2] * 2 + h_T_t		[3] * 2 + h_T_t		[4])/6;
 	h_T_r 	[0] += (h_T_r	[1] + h_T_r		[2] * 2 + h_T_r		[3] * 2 + h_T_r		[4])/6;
-	m_KCa	[0] += (m_KCa	[1] + m_KCa		[2] * 2 + m_KCa		[3] * 2 + m_KCa		[4])/6;
-	m_CAN	[0] += (m_CAN	[1] + m_CAN		[2] * 2 + m_CAN		[3] * 2 + m_CAN		[4])/6;
 	m_h		[0] += (m_h		[1] + m_h		[2] * 2 + m_h		[3] * 2 + m_h		[4])/6;
 	m_h2	[0] += (m_h2	[1] + m_h2		[2] * 2 + m_h2		[3] * 2 + m_h2		[4])/6;
 	P_h	 	[0] += (P_h		[1] + P_h		[2] * 2 + P_h		[3] * 2 + P_h		[4])/6;

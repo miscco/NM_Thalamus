@@ -11,6 +11,7 @@
 using std::vector;
 
 extern const int T 		= 50;
+extern const int onset	= 5;
 extern const int res 	= 1E4;
 extern const double dt 	= 1E3/res;
 extern const double h	= sqrt(dt);
@@ -19,10 +20,11 @@ extern const double h	= sqrt(dt);
 int main(void) {
 	// Initializing the mersenne twister.
 	MTRand mtrand;
+	const int Time 			= (T+onset)*res;
 
-	// creating the random input
-	vector<double> u_t1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
-	vector<double> u_t2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	// random input
+	vector<double> u_t1 = rand_var(mtrand, (T+onset)*res, mphi_st, dphi_st);
+	vector<double> u_t2 = rand_var(mtrand, (T+onset)*res, mphi_st, dphi_st);
 
 	// Initializing the populations;
 	Thalamic_Column Col;

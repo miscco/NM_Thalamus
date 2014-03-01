@@ -4,7 +4,6 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
-#include "randoms.h"
 #include "Thalamic_Column.h"
 #include "ODE.h"
 
@@ -17,12 +16,8 @@ extern const double h	= sqrt(dt);
 
 // simulation of the thalamic model
 int main(void) {
-	// Initializing the mersenne twister.
-	MTRand mtrand;
-
-	// creating the random input
-	vector<double> u_t1 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
-	vector<double> u_t2 = rand_inp(mtrand, res, T, 0, 10, 1E3, phi_st, phi_st, phi_inp);
+	// Initializing the seeder.
+	srand(time(0));
 
 	// Initializing the populations;
 	Thalamic_Column Col;
@@ -33,8 +28,7 @@ int main(void) {
 
 	// simulation
 	for (int t=0; t< T*res; ++t) {
-		ODE (Col, u_t1[t], u_t2[t]);
-		//ODE2(Col, u_t1[t]);
+		ODE (Col);
 	}
 	time (&end);
 

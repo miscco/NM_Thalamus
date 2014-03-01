@@ -2,14 +2,20 @@
 /***********************	header file of a complete thalamic nuclei	******************************/
 /*****************************************************************************************************/
 #pragma once
-#include <cmath>
 #include <vector>
 #include "macros.h"
 #include "parameters.h"
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/normal_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
 using std::vector;
 
-// implementation of the cortical module after Zavaglia2006
+// typedefs for the RNG
+typedef boost::mt11213b                    	ENG;    // Mersenne Twister
+typedef boost::normal_distribution<double>	DIST;   // Normal Distribution
+typedef boost::variate_generator<ENG,DIST> 	GEN;    // Variate generator
 
+// implementation of the thalamic module
 class Thalamic_Column {
 public:
 	// Constructors
@@ -21,7 +27,8 @@ public:
 	  m_KCa	(_INIT(0.0)),	m_CAN  	(_INIT(0.0)),	m_h		(_INIT(0.0)),	m_h2	(_INIT(0.0)),
 	  P_h	(_INIT(0.0)),
 	  N_tr 	(210), 		   	N_rt   	(410), 			N_rr 	(800)
-	{}
+	{MTRands   = {{ENG(rand()), DIST (mphi_t, dphi_t)}, {ENG(rand()), DIST (mphi_t, dphi_t)}};
+	 Rand_vars = {MTRands[0](), MTRands[1]()};}
 
 	// Constructors
 	Thalamic_Column(double* Con)
@@ -32,7 +39,8 @@ public:
 	  m_KCa	(_INIT(0.0)),	m_CAN  	(_INIT(0.0)),	m_h		(_INIT(0.0)),	m_h2	(_INIT(0.0)),
 	  P_h	(_INIT(0.0)),
 	  N_tr 	 (Con[0]), 	   	N_rt	(Con[1]), 		N_rr	(Con[2])
-	{}
+	{MTRands   = {{ENG(rand()), DIST (mphi_t, dphi_t)}, {ENG(rand()), DIST (mphi_t, dphi_t)}};
+	 Rand_vars = {MTRands[0](), MTRands[1]()};}
 
 	// firing rate functions
 	double 	get_Qt		(int) const;
@@ -70,14 +78,14 @@ public:
 	double 	I_CAN		(int) const;
 
 	// noise functions
-	double 	noise_xRK 	(int, double, double) const;
+	double 	noise_xRK 	(int) const;
 
 	// ODE functions
-	void 	set_RK		(int, double, double);
-	void 	add_RK	 	(double);
+	void 	set_RK		(int);
+	void 	add_RK	 	(void);
 
 	// function to extract the data
-	friend void get_data (int, Thalamic_Column&, _REPEAT(vector<double>&, 11));
+	friend void get_data (int, Thalamic_Column&, _REPEAT(double*, 1));
 
 private:
 	// population variables
@@ -107,5 +115,11 @@ private:
 	double			N_tr,		// TC to RE loop
 					N_rt,		// RE to TC loop
 					N_rr;		// RE self  loop
+
+	// random number generators
+	vector<GEN>		MTRands;
+
+	// container for random numbers
+	vector<double>	Rand_vars;
 };
 

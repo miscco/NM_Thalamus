@@ -227,11 +227,11 @@ double Thalamic_Column::I_CAN	(int N) const{
 /*****************************************************************************************************/
 /**********************************		 RK noise scaling 			**********************************/
 /*****************************************************************************************************/
-// function that returns the noise to excitatory population for stochastic RK4
-double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
+// function that returns the noise to exitatory population for stochastic RK4
+double Cortical_Column::noise_xRK(int N) const{
 	extern const double h;
 	extern const vector<double> B1, B2;
-	double n = 1  / h * (B1[N-1] * u_1 + B2[N-1] * u_2);
+	double n = 1  / h * (B1[N-1] * Rand_vars[0] + B2[N-1] * Rand_vars[1]);
 	return n;
 }
 /*****************************************************************************************************/
@@ -243,7 +243,7 @@ double Thalamic_Column::noise_xRK(int N, double u_1, double u_2) const{
 /**********************************		 	ODE functions 			**********************************/
 /*****************************************************************************************************/
 // function that calculates the Nth RK term
-void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
+void Thalamic_Column::set_RK		(int N) {
 	extern const double dt;
 	_SWITCH((Cat)	(Car)
 			(Phi_tt)(Phi_tr)(Phi_rt)(Phi_rr)
@@ -267,10 +267,10 @@ void Thalamic_Column::set_RK		(int N, double u_t1, double u_t2) {
 	Phi_tr	[N] = dt*(var_x_tr);
 	Phi_rt	[N] = dt*(var_x_rt);
 	Phi_rr	[N] = dt*(var_x_rr);
-	x_tt  	[N] = dt*(pow(gamma_t, 2) * (noise_xRK(N, u_t1, u_t2) 	- var_Phi_tt) - 2 * gamma_t * var_x_tt);
-	x_tr  	[N] = dt*(pow(gamma_t, 2) * (N_tr * get_Qt(N)			- var_Phi_tr) - 2 * gamma_t * var_x_tr);
-	x_rt  	[N] = dt*(pow(gamma_r, 2) * (N_rt * get_Qr(N) 			- var_Phi_rt) - 2 * gamma_r * var_x_rt);
-	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)		 	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
+	x_tt  	[N] = dt*(pow(gamma_t, 2) * (noise_xRK(N) 		- var_Phi_tt) - 2 * gamma_t * var_x_tt);
+	x_tr  	[N] = dt*(pow(gamma_t, 2) * (N_tr * get_Qt(N)	- var_Phi_tr) - 2 * gamma_t * var_x_tr);
+	x_rt  	[N] = dt*(pow(gamma_r, 2) * (N_rt * get_Qr(N) 	- var_Phi_rt) - 2 * gamma_r * var_x_rt);
+	x_rr  	[N] = dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)	- var_Phi_rr) - 2 * gamma_r * var_x_rr);
 }
 
 // function that ads all the RK terms together
@@ -284,7 +284,7 @@ void Thalamic_Column::add_RK(double u_t) {
 	Phi_tr	[0] += (Phi_tr	[1] + Phi_tr	[2] * 2 + Phi_tr	[3] * 2 + Phi_tr	[4])/6;
 	Phi_rt	[0] += (Phi_rt	[1] + Phi_rt	[2] * 2 + Phi_rt	[3] * 2 + Phi_rt	[4])/6;
 	Phi_rr	[0] += (Phi_rr	[1] + Phi_rr	[2] * 2 + Phi_rr	[3] * 2 + Phi_rr	[4])/6;
-	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * h * u_t;
+	x_tt  	[0] += (x_tt	[1] + x_tt		[2] * 2 + x_tt		[3] * 2 + x_tt		[4])/6 + pow(gamma_t, 2) * h * Rand_vars[0];
 	x_tr  	[0] += (x_tr	[1] + x_tr		[2] * 2 + x_tr		[3] * 2 + x_tr		[4])/6;
 	x_rt  	[0] += (x_rt	[1] + x_rt		[2] * 2 + x_rt		[3] * 2 + x_rt		[4])/6;
 	x_rr  	[0] += (x_rr	[1] + x_rr		[2] * 2 + x_rr		[3] * 2 + x_rr		[4])/6;
@@ -297,6 +297,10 @@ void Thalamic_Column::add_RK(double u_t) {
 	m_h		[0] += (m_h		[1] + m_h		[2] * 2 + m_h		[3] * 2 + m_h		[4])/6;
 	m_h2	[0] += (m_h2	[1] + m_h2		[2] * 2 + m_h2		[3] * 2 + m_h2		[4])/6;
 	P_h	 	[0] += (P_h		[1] + P_h		[2] * 2 + P_h		[3] * 2 + P_h		[4])/6;
+	// generating the noise for the next iteration
+	for (unsigned i=0; i<Rand_vars.size(); ++i) {
+		Rand_vars[i] = MTRands[i]();
+	}
 }
 /*****************************************************************************************************/
 /**********************************		 		end			 		**********************************/

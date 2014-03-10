@@ -15,26 +15,14 @@ if nargin == 0
     T       	= 30;  		% duration of the simulation
 end
 
-[Vt, Vr] = Thalamus(T, Con, var_stim);
+[Vt] = Thalamus(T, Con, var_stim);
 
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);
 
 figure(1)
 subplot(211), plot(timeaxis,Vt)
-title('Exitatory membrane voltage'), xlabel('time in s'), ylabel('Vt in mV')
+title('Thalamic relay membrane voltage'), xlabel('time in s'), ylabel('Vt in mV')
 subplot(212), plot(timeaxis,Vr)
-title('Inhibitory membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
-
-% 
-fs      = L/T;
-NFFT    = 2^nextpow2(L);
-
-[Pxx,f] = pwelch(Vt-mean(Vt), [], [], [], fs,'onesided');
-n       = find(f<=60, 1, 'last' );
- 
-figure(3)
-plot(f(1:n),Pxx(1:n))
-title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')
-
+title('Thalamic reticular membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
 %save('Thalamus.mat','Vt','Vr')

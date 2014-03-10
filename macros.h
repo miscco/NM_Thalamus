@@ -1,6 +1,6 @@
-/*****************************************************************************************************/
-/******************		file that defines the macros used in the simulation		**********************/
-/*****************************************************************************************************/
+/****************************************************************************************************/
+/*									Definition of all macros used									*/
+/****************************************************************************************************/
 #pragma once
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
@@ -9,15 +9,18 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
 
-// macro for the initialization of the vectors
+/****************************************************************************************************/
+/*									Macro for vector initialization									*/
+/****************************************************************************************************/
 #define _INIT(x)	{x, 0.0, 0.0, 0.0, 0.0}
+/****************************************************************************************************/
+/*										 		end			 										*/
+/****************************************************************************************************/
 
-// macros to get the respective variables for RK evaluation
-#define _RK1(x) (x[0])
-#define _RK2(x) (x[0] + x[1] * 0.5)
-#define _RK3(x) (x[0] + x[2] * 0.5)
-#define _RK4(x) (x[0] + x[3])
 
+/****************************************************************************************************/
+/*									Macros for calculation of nth RK term							*/
+/****************************************************************************************************/
 #define _GET_VARNAMES(r, data, i, elem) BOOST_PP_COMMA_IF( i ) BOOST_PP_CAT(data, elem)
 #define _SET_RK1(r, data, elem)			BOOST_PP_CAT(data, elem) = (elem[0]);
 #define _SET_RK2(r, data, elem)			BOOST_PP_CAT(data, elem) = (elem[0] + elem[1] * 0.5);
@@ -40,15 +43,16 @@
 				BOOST_PP_SEQ_FOR_EACH(_SET_RK4, var_, __VA_ARGS__)							\
 				break;																		\
 		}
+/****************************************************************************************************/
+/*										 		end			 										*/
+/****************************************************************************************************/
 
-// macros to add the RK terms
-#define _ADD_RK(elem) elem [0] += (elem [1] + elem [2] *2 + elem [3] *2 + elem [4])/6;
 
-// macros to save the variables
-#define _SAVEVAR1(elem) elem, #elem
-#define _SAVEVAR2(r, data, i, elem) BOOST_PP_COMMA_IF( i ) _SAVEVAR1(elem)
-#define _SAVEVARS(...)	save_file( BOOST_PP_SEQ_FOR_EACH_I(_SAVEVAR2, , __VA_ARGS__) );
-
-// macro for repeated entry
+/****************************************************************************************************/
+/*									Macros for repeated strings										*/
+/****************************************************************************************************/
 #define _REPEAT1(z, num, elem) BOOST_PP_COMMA_IF(num) elem
-#define _REPEAT(elem, num) 	 BOOST_PP_REPEAT(num , _REPEAT1 , elem)
+#define _REPEAT(elem, num) 	   BOOST_PP_REPEAT(num , _REPEAT1 , elem)
+/****************************************************************************************************/
+/*										 		end			 										*/
+/****************************************************************************************************/

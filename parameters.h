@@ -78,8 +78,8 @@
 /*										reversal potentials											*/
 /****************************************************************************************************/
 // synaptic inputs in mV
-#define V_rev_e  	0
-#define V_rev_i  	-70
+#define E_AMPA  	0
+#define E_GABA  	-70
 
 // Leak current
 #define E_L_t		-70

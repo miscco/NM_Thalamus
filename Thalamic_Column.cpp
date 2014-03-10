@@ -51,27 +51,27 @@ double Thalamic_Column::get_Qr	(int N) const{
 // excitatory input to TC population
 double Thalamic_Column::I_et	(int N) const{
 	_SWITCH((Vt)(Phi_tt))
-	double psi = g_AMPA * var_Phi_tt * (var_Vt - V_rev_e);
+	double psi = g_AMPA * var_Phi_tt * (var_Vt - E_AMPA);
 	return psi;
 }
 
 // inhibitory input to TC population
 double Thalamic_Column::I_it	(int N) const{
 	_SWITCH((Vt)(Phi_rt))
-	double psi = g_GABA * var_Phi_rt * (var_Vt - V_rev_i);
+	double psi = g_GABA * var_Phi_rt * (var_Vt - E_GABA);
 	return psi;
 }
 // excitatory input to RE population
 double Thalamic_Column::I_er	(int N) const{
 	_SWITCH((Vr)(Phi_tr))
-	double psi = g_AMPA * var_Phi_tr * (var_Vr - V_rev_e);
+	double psi = g_AMPA * var_Phi_tr * (var_Vr - E_AMPA);
 	return psi;
 }
 
 // inhibitory input to RE population
 double Thalamic_Column::I_ir	(int N) const{
 	_SWITCH((Vr)(Phi_rr))
-	double psi = g_GABA * var_Phi_rr * (var_Vr - V_rev_i);
+	double psi = g_GABA * var_Phi_rr * (var_Vr - E_GABA);
 	return psi;
 }
 /****************************************************************************************************/

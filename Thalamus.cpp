@@ -37,14 +37,15 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	// Fetch inputs
 	const int T				= (int) (mxGetScalar(prhs[0]));
-	double* Connectivity	= mxGetPr (prhs[1]);
+	const int Time 			= (T+onset)*res;
+	double* Param_Thalamus	= mxGetPr (prhs[1]);
 	double* var_stim	 	= mxGetPr (prhs[2]);
 
 	// Initializing the populations;
-	Thalamic_Column Thalamus(Connectivity);
+	Thalamic_Column Thalamus(Param_Thalamus);
 
 	// Initialize the stimulation protocol
-	Stim	Stimulation(Thalamus, Var_Stim);
+	Stim	Stimulation(Thalamus, var_stim);
 
 	// setting up the data containers
 	mxArray* Vt		= SetMexArray(1, T*red);

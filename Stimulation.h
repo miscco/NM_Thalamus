@@ -69,7 +69,7 @@ private:
 	// stimulation strength
 	double strength = 0.0;
 
-	// inter stimulus intervall
+	// inter stimulus interval
 	int ISI = 0;
 
 	// onset until stimulation starts

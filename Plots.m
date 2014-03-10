@@ -1,5 +1,5 @@
 % mex command is given by: 
-% mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" Thalamus.cpp Thalamic_Colum.cpp
+% mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" Thalamus.cpp Thalamic_Column.cpp
 
 function Plots(T, onset)
 

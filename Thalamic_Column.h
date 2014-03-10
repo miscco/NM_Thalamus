@@ -50,6 +50,9 @@ public:
 	// Initialize the RNGs
 	void 	set_RNG		(void);
 
+	// change the strength of input
+	void	set_input	(double I) {input = I;}
+
 	// Firing rates
 	double 	get_Qt		(int) const;
 	double 	get_Qr		(int) const;

@@ -9,86 +9,115 @@
 /****************************************************************************************************/
 class Stim {
 public:
-	// empty constructor for compiling
+	/* empty constructor for compiling */
 	Stim(void);
 
-	Stim(Thalamic_Column& C, double* var)
-	{Thalamus = &T;
-	 setup(var);}
+	Stim(Thalamic_Column& T, double* var)
+	{ Thalamus = &T;
+	  setup(var);}
 
-	// scaling from SI to simulation variables s -> ms
+	/* setup with respect to stimulation mode */
 	void setup		(double* var_stim) {
 		extern const int onset;
 		extern const int res;
 		extern const int dt;
 
-		// scale the stimulation strength with respect to ms^-1
-		strength = var_stim[0] / 1000;
+		/* mode of stimulation */
+		mode		= (int) var_stim[0];
 
-		// scale the stimulation variables with respect to simulation resolution
-		ISI 	 = (int) var_stim[1] * res;
+		/* scale the stimulation strength from s^-1 to ms^-1 */
+		strength 	= 		var_stim[1] / 1000;
 
-		// stimulation starts after the onset
-		start 	 = (int)(var_stim[2] + onset) *res;
+		/* scale duration from ms to dt */
+		duration 	= (int) var_stim[2] * res / 1000;
 
-		// rescale duration with respect to dt
-		duration = (int) var_stim[3]/dt;
+		/* scale the ISI from s to ms^-1 */
+		ISI 		= (int) var_stim[3] * res;
+
+		/* scale time to stimulus from ms to dt */
+		time_to_stim= (int) var_stim[4] * res / 1000;
+
+		if(mode==1) {
+			time_to_stim = (onset+1) * res;
+		}
+
+		correction = onset * res;
+
 	}
 
 	void check_stim	(int time) {
-		// check whether a stimulation should start
-		// the duration of the stimulation is ignored
-		if(time==(start + count_stim*ISI)){
-			// turn the stimulation on
-			mode = 1;
-			Thalamus->set_input(strength);
+
+		/* check if stimulation should start */
+		switch (mode) {
+
+		/* no stimulation */
+		default:
+			break;
+
+		/* periodic stimulation */
+		case 1:
+			/* check if time is reached */
+			if(time == time_to_stim) {
+				/* switch stimulation on */
+				stimulation_started 	= true;
+				Thalamus->set_input(strength);
+
+				/* update the timer */
+				time_to_stim += ISI;
+			}
+			break;
 
 		}
 
-		// check whether a stimulation should end
-		if(mode ==1 && count_dur ==duration) {
-			// turn off the stimulation
-			mode = 0;
-			Thalamus->set_input(0.0);
+		/* wait to switch the stimulation off */
+		if(stimulation_started) {
+			count_duration++;
 
-			// add counter for stimulation occurrence
-			count_stim++ ;
-
-			// reset the stimulation counter
-			count_dur = 0;
-		}
-
-		// if stimulation is on track count its duration
-		if(mode==1){
-			count_dur++;
+			/* switch stimulation off */
+			if(count_duration==duration) {
+				stimulation_started 	= false;
+				count_duration			= 0;
+				Thalamus->set_input(0.0);
+			}
 		}
 	}
 
 private:
 
-	// stimulation strength
-	double strength = 0.0;
+	/* Stimulation parameters */
+	/* stimulation strength */
+	double strength 	= 0.0;
 
-	// inter stimulus interval
-	int ISI = 0;
+	/* duration of the stimulation */
+	int duration 		= 500;
 
-	// onset until stimulation starts
-	int start = 0;
+	/* inter stimulus intervall in case of periodic stimulation */
+	int ISI				= 5E4;
 
-	// duration of the stimulation
-	int duration = 0;
+	/* time until stimulus after minimum was found */
+	int	time_to_stim	= 5500;
 
-	// counter for stimulation events
-	int count_stim = 0;
+	/* mode of stimulation 				*/
+	/* 0 == none 						*/
+	/* 1 == periodic 					*/
+	int mode			= 0;
 
-	// counter for stimulation length
-	int count_dur  = 0;
+	/* Internal variables */
+	/* Simulation on for TRUE and off for FALSE */
+	bool stimulation_started= false;
 
-	// Simulation on for TRUE and off for FALSE
-	bool mode = 0;
+	/* onset in timesteps to correct the given time of the markers */
+	int correction			= 10000;
 
-	// Pointer to thalamic module
+	/* counter for stimulation duration */
+	int count_duration		= 0;
+
+	/* counter after minimum */
+	int count_to_start 		= 0;
+
+	/* pointer to thalamic column */
 	Thalamic_Column* Thalamus;
+
 };
 /****************************************************************************************************/
 /*										 		end													*/

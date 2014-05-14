@@ -139,12 +139,12 @@ private:
 	const double 	Qr_max		= 400.E-3;
 
 	/* Sigmoid threshold in mV */
-	const double 	theta_t		= -45;
-	const double 	theta_r		= -45;
+	const double 	theta_t		= -58.6;
+	const double 	theta_r		= -58.6;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_t		= 3;
-	const double 	sigma_r		= 3;
+	const double 	sigma_t		= 9;
+	const double 	sigma_r		= 9;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1          = (3.14159265/sqrt(3));
@@ -153,24 +153,21 @@ private:
 	const double 	gamma_e		= 70E-3;
 	const double 	gamma_i		= 58.6E-3;
 
-	/* axonal flux time constant */
-	const double 	nu			= 120E-3;
-
 	/* Conductivities in mS/cm^-2 */
 	/* Leak current */
-	const double 	g_L_t  		= 0.6;
-	const double 	g_L_r  		= 1.5;
+	const double 	g_L_t  		= 1;
+	const double 	g_L_r  		= 1;
 
 	/* Potassium leak current */
 	const double 	g_LK_t 		= 0.02;
 	const double 	g_LK_r 		= 0.02;
 
 	/* T current */
-	const double	g_T_t		= 2.2;
+	const double	g_T_t		= 3;
 	const double	g_T_r		= 2;
 
 	/* h current */
-	const double	g_h			= 0.07;
+	const double	g_h			= 0.04;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -178,8 +175,8 @@ private:
 	const double 	E_GABA  	= -70;
 
 	/* Leak */
-	const double 	E_L_t 		= -64;
-	const double 	E_L_r 		= -64;
+	const double 	E_L_t 		= -70;
+	const double 	E_L_r 		= -70;
 
 	/* Potassium */
 	const double 	E_K    		= -100;
@@ -188,11 +185,11 @@ private:
 	const double 	E_Ca    	= 120;
 
 	/* I_h current */
-	const double 	E_h    		= -40;
+	const double 	E_h    		= -43;
 
 	/* Calcium parameters */
 	const double	alpha_Ca	= -50E-6;			/* influx per spike in nmol		*/
-	const double	tau_Ca		= 5;				/* calcium time constant in ms	*/
+	const double	tau_Ca		= 10;				/* calcium time constant in ms	*/
 	const double	Ca_0		= 2E-4;				/* resting concentration 		*/
 
 	/* I_h activation parameters */
@@ -205,7 +202,7 @@ private:
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
-	const double	dphi		= 2E-3;;
+	const double	dphi		= 10E-3;;
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */

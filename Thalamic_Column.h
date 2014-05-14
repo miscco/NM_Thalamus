@@ -76,8 +76,6 @@ public:
 	/* Activation functions */
 	double  m_inf_T_t	(int) const;
 	double  m_inf_T_r	(int) const;
-	double  tau_m_T_t	(int) const;
-	double  tau_m_T_r	(int) const;
 	double  m_inf_h		(int) const;
 	double  tau_m_h		(int) const;
 
@@ -121,8 +119,6 @@ private:
 					x_rr	= _INIT(0.0),		/* derivative of Phi_rr								*/
 					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
 					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
-					m_T_t	= _INIT(0.0),		/* activation 	of T channel						*/
-					m_T_r	= _INIT(0.0),		/* activation 	of T channel						*/
 					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
 					m_h2	= _INIT(0.0),		/* activation 	of h   channel bound with protein 	*/
 					P_h		= _INIT(0.0);		/* fraction of protein bound with calcium 			*/

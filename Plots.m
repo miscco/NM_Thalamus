@@ -4,9 +4,11 @@
 function Plots(T)
 
 if nargin == 0
-    Con     	= [10;		% N_tr
-               	   10;		% N_rt
-                   40];		% N_rr    
+    Con     	= [ 2;      % sigma
+                   5;		% N_tr
+               	   5;		% N_rt
+                   50];		% N_rr 
+               
 
     var_stim    = [ 0;          % strength of the stimulus in Hz (spikes per second)
                     0;          % time between   stimuli in s    

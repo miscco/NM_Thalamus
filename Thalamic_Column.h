@@ -54,7 +54,8 @@ public:
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Con)
-	: N_tr		(Con[0]),	N_rt		(Con[1]),	N_rr		(Con[2])
+	: 	sigma_t		(Con[0]),	sigma_r		(Con[0]),
+		N_tr		(Con[1]),	N_rt		(Con[2]),	N_rr		(Con[3])
 	{set_RNG();}
 
 	/* Set strength of input */
@@ -131,8 +132,8 @@ private:
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
-	const double 	tau_t 		= 30;
-	const double 	tau_r 		= 30;
+	const double 	tau_t 		= 20;
+	const double 	tau_r 		= 20;
 
 	/* Maximum firing rate in ms^-1 */
 	const double 	Qt_max		= 400.E-3;
@@ -143,8 +144,8 @@ private:
 	const double 	theta_r		= -58.6;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_t		= 9;
-	const double 	sigma_r		= 9;
+	const double 	sigma_t		= 3;
+	const double 	sigma_r		= 3;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1          = (3.14159265/sqrt(3));
@@ -160,14 +161,14 @@ private:
 
 	/* Potassium leak current */
 	const double 	g_LK_t 		= 0.02;
-	const double 	g_LK_r 		= 0.02;
+	const double 	g_LK_r 		= 0.012;
 
 	/* T current */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2;
 
 	/* h current */
-	const double	g_h			= 0.04;
+	const double	g_h			= 0.07;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -206,9 +207,9 @@ private:
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 2;
-	const double 	N_rt		= 5.5;
-	const double 	N_rr		= 5;
+	const double 	N_tr		= 10;
+	const double 	N_rt		= 10;
+	const double 	N_rr		= 40;
 
 	friend class 	Stim;
 };

@@ -1,5 +1,5 @@
 % mex command is given by: 
-% mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" Thalamus.cpp Thalamic_Column.cpp
+% mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive -O3" Thalamus.cpp Thalamic_Column.cpp
 
 function Plots(T)
 
@@ -10,10 +10,18 @@ if nargin == 0
                    50];		% N_rr 
                
 
-    var_stim    = [ 0;          % strength of the stimulus in Hz (spikes per second)
-                    0;          % time between   stimuli in s    
-                    0;          % time until first stimuli in s
-                    0];		% duration of the stimulus in ms
+    % stimulation parameters
+    % first number is the mode of stimulation
+    % 0 == none
+    % 1 == periodic
+    % 2 == phase dependend up state
+    % 3 == phase dependend down state
+    
+    var_stim    = [ 1           % mode of stimulation
+                    30;          % strength of the stimulus      in Hz (spikes per second)
+                    50;       	% duration of the stimulus      in ms
+                    5;          % time between stimuli          in s    
+                    1];         % time until stimuli after min 	in ms
     T       	= 30;  		% duration of the simulation
 end
 [Vt, Vr] = Thalamus(T, Con, var_stim);

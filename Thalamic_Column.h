@@ -186,7 +186,7 @@ private:
 	const double 	E_Ca    	= 120;
 
 	/* I_h current */
-	const double 	E_h    		= -43;
+	const double 	E_h    		= -40;
 
 	/* Calcium parameters */
 	const double	alpha_Ca	= -50E-6;			/* influx per spike in nmol		*/

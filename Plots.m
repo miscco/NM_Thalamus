@@ -4,10 +4,10 @@
 function Plots(T)
 
 if nargin == 0
-    Con     	= [ 2;      % sigma
-                   5;		% N_tr
-               	   5;		% N_rt
-                   50];		% N_rr 
+    Con     	= [ 4;      % sigma
+                    6;		% N_tr
+                    5;		% N_rt
+                    100];		% N_rr 
                
 
     % stimulation parameters
@@ -17,10 +17,10 @@ if nargin == 0
     % 2 == phase dependend up state
     % 3 == phase dependend down state
     
-    var_stim    = [ 1           % mode of stimulation
-                    30;          % strength of the stimulus      in Hz (spikes per second)
-                    50;       	% duration of the stimulus      in ms
-                    5;          % time between stimuli          in s    
+    var_stim    = [ 0;           % mode of stimulation
+                    200;          % strength of the stimulus      in Hz (spikes per second)
+                    100;       	% duration of the stimulus      in ms
+                    6;          % time between stimuli          in s    
                     1];         % time until stimuli after min 	in ms
     T       	= 30;  		% duration of the simulation
 end
@@ -40,4 +40,4 @@ subplot(312), plot(timeaxis,Vr)
 title('Thalamic reticular membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
 subplot(313), plot(f(1:n),Pxx(1:n))
 title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')
-%save('Thalamus.mat','Vt','Vr')
+save('Thalamus.mat','Vt','Vr')

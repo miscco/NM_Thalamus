@@ -38,7 +38,7 @@
 /****************************************************************************************************/
 /*										Fixed simulation settings									*/
 /****************************************************************************************************/
-extern const int onset	= 10;								/* time until data is stored in  s		*/
+extern const int onset	= 15;								/* time until data is stored in  s		*/
 extern const int res 	= 1E4;								/* number of iteration steps per s		*/
 extern const int red 	= res/100;							/* number of iterations that is saved	*/
 extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/

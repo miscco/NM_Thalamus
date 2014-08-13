@@ -152,7 +152,7 @@ private:
 
 	/* PSP rise time in ms^-1 */
 	const double 	gamma_e		= 70E-3;
-	const double 	gamma_i		= 58.6E-3;
+	const double 	gamma_i		= 100E-3;
 
 	/* Conductivities in mS/cm^-2 */
 	/* Leak current */
@@ -161,14 +161,14 @@ private:
 
 	/* Potassium leak current */
 	const double 	g_LK_t 		= 0.02;
-	const double 	g_LK_r 		= 0.012;
+	const double 	g_LK_r 		= 0.02;
 
 	/* T current */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2;
 
 	/* h current */
-	const double	g_h			= 0.07;
+	const double	g_h			= 0.08;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -186,7 +186,7 @@ private:
 	const double 	E_Ca    	= 120;
 
 	/* I_h current */
-	const double 	E_h    		= -40;
+	const double 	E_h    		= -43;
 
 	/* Calcium parameters */
 	const double	alpha_Ca	= -50E-6;			/* influx per spike in nmol		*/
@@ -203,13 +203,13 @@ private:
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
-	const double	dphi		= 10E-3;;
+	const double	dphi		= 10E-3;
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 10;
-	const double 	N_rt		= 10;
-	const double 	N_rr		= 40;
+	const double 	N_tr		= 5;
+	const double 	N_rt		= 5;
+	const double 	N_rr		= 50;
 
 	friend class 	Stim;
 };

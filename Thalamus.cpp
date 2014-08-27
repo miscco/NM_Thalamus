@@ -27,13 +27,11 @@
 /*		The Simulation requires the following boost libraries:	Preprocessor						*/
 /*																Random								*/
 /****************************************************************************************************/
-#include <ctime>
 #include "mex.h"
 #include "matrix.h"
 #include "Thalamic_Column.h"
 #include "Stimulation.h"
 #include "saves.h"
-#include "ODE.h"
 
 /****************************************************************************************************/
 /*										Fixed simulation settings									*/
@@ -45,6 +43,22 @@ extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/
 extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
 /****************************************************************************************************/
 /*										 		end			 										*/
+/****************************************************************************************************/
+
+
+/****************************************************************************************************/
+/*									Constants for SRK4 iteration									*/
+/****************************************************************************************************/
+extern const vector<double> B1 = {0,
+								  0.626708569400000081728308032325,
+								  1.7296310295000001389098542858846,
+		 	 	 	 	 	 	  1.2703689705000000831347506391467};
+extern const vector<double> B2 = {0,
+								  0.78000033203198970710445792065002,
+								  1.28727807507536762265942797967,
+								  0.44477273249350995909523476257164};
+/****************************************************************************************************/
+/*										 		end													*/
 /****************************************************************************************************/
 
 
@@ -80,7 +94,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	/* Simulation */
 	int count = 0;
 	for (int t=0; t<Time; ++t) {
-		ODE (Thalamus);
+		Thalamus.iterate_ODE();
 		Stimulation.check_stim(t);
 		if(t>=onset*res && t%red==0){
 			get_data(count, Thalamus, Pr_Vt, Pr_Vr);

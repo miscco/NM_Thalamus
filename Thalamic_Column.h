@@ -101,6 +101,7 @@ public:
 	/* ODE functions */
 	void 	set_RK		(int);
 	void 	add_RK	 	(void);
+	void	iterate_ODE (void);
 
 	/* Data storage  access */
 	friend void get_data (int, Thalamic_Column&, _REPEAT(double*, 2));
@@ -144,8 +145,8 @@ private:
 	const double 	theta_r		= -58.6;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_t		= 3;
-	const double 	sigma_r		= 3;
+	const double 	sigma_t		= 4;
+	const double 	sigma_r		= 4;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1          = (3.14159265/sqrt(3));
@@ -207,9 +208,9 @@ private:
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 5;
+	const double 	N_tr		= 6;
 	const double 	N_rt		= 5;
-	const double 	N_rr		= 50;
+	const double 	N_rr		= 100;
 
 	friend class 	Stim;
 };

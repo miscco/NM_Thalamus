@@ -1,13 +1,13 @@
 % mex command is given by: 
-% mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive -O3" Thalamus.cpp Thalamic_Column.cpp
+% mex CXXFLAGS="\$CXXFLAGS -std=c++11" Thalamus.cpp Thalamic_Column.cpp
 
 function Plots(T)
 
 if nargin == 0
-    Con     	= [ 4;      % sigma
-                    6;		% N_tr
-                    5;		% N_rt
-                    100];		% N_rr 
+    Con     	= [ 6;      % sigma
+                    4;		% N_tr
+                    4;		% N_rt
+                    20];		% N_rr 
                
 
     % stimulation parameters
@@ -18,19 +18,19 @@ if nargin == 0
     % 3 == phase dependend down state
     
     var_stim    = [ 0;           % mode of stimulation
-                    200;          % strength of the stimulus      in Hz (spikes per second)
-                    100;       	% duration of the stimulus      in ms
-                    6;          % time between stimuli          in s    
+                    50;          % strength of the stimulus      in Hz (spikes per second)
+                    120;       	% duration of the stimulus      in ms
+                    7;          % time between stimuli          in s    
                     1];         % time until stimuli after min 	in ms
     T       	= 30;  		% duration of the simulation
 end
-[Vt, Vr] = Thalamus(T, Con, var_stim);
+[Vt, Vr, I_t, I_h] = Thalamus(T, Con, var_stim);
 
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);
 
-fs      = L/T;
-[Pxx,f] = pwelch(Vt-mean(Vt), [], [], [], fs,'onesided');
+Fs      = L/T;
+[Pxx,f] = pwelch(Vt-mean(Vt), hamming(4*Fs), 2*Fs, [], Fs,'ConfidenceLevel', 0.9, 'power');
 n       = find(f<=60, 1, 'last' );
 
 figure(1)
@@ -40,4 +40,12 @@ subplot(312), plot(timeaxis,Vr)
 title('Thalamic reticular membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
 subplot(313), plot(f(1:n),Pxx(1:n))
 title('Powerspectrum of Steyn-Ross model with pwelch'), xlabel('frequency in Hz'), ylabel('Power')
-save('Thalamus.mat','Vt','Vr')
+%save('Thalamus.mat','Vt','Vr')
+% 
+% figure(2)
+% subplot(311), plot(timeaxis,Vt)
+% title('Thalamic relay membrane voltage'), xlabel('time in s'), ylabel('Vt in mV')
+% subplot(312), plot(timeaxis,I_t)
+% title('Thalamic reticular membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')
+% subplot(313), plot(timeaxis,I_h)
+% title('Thalamic reticular membrane voltage'), xlabel('time in s'), ylabel('Vr in mV')

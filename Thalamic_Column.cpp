@@ -114,7 +114,7 @@ double Thalamic_Column::m_inf_T_t	(int N) const{
 /* Activation in RE population after Destexhe 1996 */
 double Thalamic_Column::m_inf_T_r	(int N) const{
 	_SWITCH((Vr))
-	double m = 1/(1+exp(-(var_Vr+52)/7.2));
+	double m = 1/(1+exp(-(var_Vr+52)/7.4));
 	return m;
 }
 
@@ -132,7 +132,7 @@ double Thalamic_Column::h_inf_T_r	(int N) const{
 	return h;
 }
 
-/* deactivation time in RE population after Destexhe 1996 */
+/* Deactivation time in RE population after Destexhe 1996 */
 double Thalamic_Column::tau_h_T_t	(int N) const{
 	_SWITCH((Vt))
 	double tau =  (30.8 + (211.4 + exp((var_Vt+115.2)/5))/(1 + exp((var_Vt+86)/3.2)))/pow(3, 1.2);
@@ -163,7 +163,8 @@ double Thalamic_Column::m_inf_h	(int N) const{
 /* Activation time for slow components in TC population after Destexhe 1993 */
 double Thalamic_Column::tau_m_h	(int N) const{
 	_SWITCH((Vt))
-	double tau = 1. / (exp(-14.59 - 0.086 * var_Vt) + exp(-1.87 + 0.07 * var_Vt));
+	//double tau = 1. / (exp(-14.59 - 0.086 * var_Vt) + exp(-1.87 + 0.07 * var_Vt));
+	double tau = (20 + 1000/(exp((var_Vt + 71.5)/14.2) + exp(-(var_Vt + 89)/11.6)));
 	return tau;
 }
 /****************************************************************************************************/

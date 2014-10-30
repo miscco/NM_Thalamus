@@ -53,9 +53,9 @@ public:
 	{set_RNG();}
 
 	/* Constructor for simulation */
-	Thalamic_Column(double* Con)
-	: 	sigma_t		(Con[0]),	sigma_r		(Con[0]),
-		N_tr		(Con[1]),	N_rt		(Con[2]),	N_rr		(Con[3])
+	Thalamic_Column(double* Par)
+	: 	g_h 		(Par[0]),	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),
+		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
 	{set_RNG();}
 
 	/* Set strength of input */
@@ -145,8 +145,8 @@ private:
 	const double 	theta_r		= -58.6;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_t		= 4;
-	const double 	sigma_r		= 4;
+	const double 	sigma_t		= 6;
+	const double 	sigma_r		= 6;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1          = (3.14159265/sqrt(3));
@@ -161,15 +161,15 @@ private:
 	const double 	g_L_r  		= 1;
 
 	/* Potassium leak current */
-	const double 	g_LK_t 		= 0.02;
-	const double 	g_LK_r 		= 0.02;
+	const double 	g_LK_t 		= 0.017;
+	const double 	g_LK_r 		= 0.01;
 
 	/* T current */
 	const double	g_T_t		= 3;
-	const double	g_T_r		= 2;
+	const double	g_T_r		= 2.3;
 
 	/* h current */
-	const double	g_h			= 0.08;
+	const double	g_h			= 0.06;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -187,7 +187,7 @@ private:
 	const double 	E_Ca    	= 120;
 
 	/* I_h current */
-	const double 	E_h    		= -43;
+	const double 	E_h    		= -40;
 
 	/* Calcium parameters */
 	const double	alpha_Ca	= -50E-6;			/* influx per spike in nmol		*/
@@ -196,7 +196,7 @@ private:
 
 	/* I_h activation parameters */
 	const double 	k1			= 2.5E7;
-	const double 	k2			= 5E-4;
+	const double 	k2			= 4E-4;
 	const double 	k3			= 1E-1;
 	const double 	k4			= 1E-3;
 	const double 	n_P			= 4;
@@ -209,8 +209,8 @@ private:
 
 	/* Connectivities (dimensionless) */
 	const double 	N_tr		= 6;
-	const double 	N_rt		= 5;
-	const double 	N_rr		= 100;
+	const double 	N_rt		= 6;
+	const double 	N_rr		= 20;
 
 	friend class 	Stim;
 };

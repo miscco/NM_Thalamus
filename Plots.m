@@ -4,10 +4,11 @@
 function Plots(T)
 
 if nargin == 0
-    Con     	= [ 4;      % sigma
-                    6;		% N_tr
-                    5;		% N_rt
-                    100];		% N_rr 
+    Con     	= [ 0.07;       % g_h
+                    0.02;       % g_LK_t
+                    3;          % N_tr
+                    3;          % N_rt
+                    30];		% N_rr 
                
 
     % stimulation parameters
@@ -18,9 +19,9 @@ if nargin == 0
     % 3 == phase dependend down state
     
     var_stim    = [ 0;           % mode of stimulation
-                    200;          % strength of the stimulus      in Hz (spikes per second)
-                    100;       	% duration of the stimulus      in ms
-                    6;          % time between stimuli          in s    
+                    25;          % strength of the stimulus      in Hz (spikes per second)
+                    70;       	% duration of the stimulus      in ms
+                    5;          % time between stimuli          in s    
                     1];         % time until stimuli after min 	in ms
     T       	= 30;  		% duration of the simulation
 end

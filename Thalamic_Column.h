@@ -54,7 +54,7 @@ public:
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Par)
-	: 	g_h 		(Par[0]),	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),
+	: 	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),	g_h 		(Par[0]),
 		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
 	{set_RNG();}
 
@@ -79,6 +79,7 @@ public:
 	double  m_inf_T_r	(int) const;
 	double  m_inf_h		(int) const;
 	double  tau_m_h		(int) const;
+	double  P_h			(int) const;
 
 	/* Deactivation functions */
 	double  h_inf_T_t	(int) const;
@@ -122,8 +123,7 @@ private:
 					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
 					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
 					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
-					m_h2	= _INIT(0.0),		/* activation 	of h   channel bound with protein 	*/
-					P_h		= _INIT(0.0);		/* fraction of protein bound with calcium 			*/
+					m_h2	= _INIT(0.0);		/* activation 	of h   channel bound with protein 	*/
 
 	/* Random number generators */
 	vector<GEN>		MTRands;
@@ -161,15 +161,15 @@ private:
 	const double 	g_L_r  		= 1;
 
 	/* Potassium leak current */
-	const double 	g_LK_t 		= 0.017;
-	const double 	g_LK_r 		= 0.01;
+	const double 	g_LK_t 		= 0.02;
+	const double 	g_LK_r 		= 0.02;
 
 	/* T current */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2.3;
 
 	/* h current */
-	const double	g_h			= 0.06;
+	const double	g_h			= 0.07;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -208,9 +208,9 @@ private:
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 6;
-	const double 	N_rt		= 6;
-	const double 	N_rr		= 20;
+	const double 	N_tr		= 3;
+	const double 	N_rt		= 3;
+	const double 	N_rr		= 30;
 
 	friend class 	Stim;
 };

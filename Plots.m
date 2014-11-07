@@ -4,10 +4,10 @@
 function Plots(T)
 
 if nargin == 0
-    Con     	= [ 0.07;       % g_h
+    Con     	= [ 0.062;       % g_h
                     0.02;       % g_LK_t
                     3;          % N_tr
-                    3;          % N_rt
+                    4;          % N_rt
                     30];		% N_rr 
                
 

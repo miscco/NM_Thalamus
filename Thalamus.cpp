@@ -45,23 +45,6 @@ extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
 /*										 		end			 										*/
 /****************************************************************************************************/
 
-
-/****************************************************************************************************/
-/*									Constants for SRK4 iteration									*/
-/****************************************************************************************************/
-extern const vector<double> B1 = {0,
-								  0.626708569400000081728308032325,
-								  1.7296310295000001389098542858846,
-		 	 	 	 	 	 	  1.2703689705000000831347506391467};
-extern const vector<double> B2 = {0,
-								  0.78000033203198970710445792065002,
-								  1.28727807507536762265942797967,
-								  0.44477273249350995909523476257164};
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/
-
-
 /****************************************************************************************************/
 /*										Simulation routine	 										*/
 /*										lhs defines outputs											*/
@@ -86,10 +69,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	/* Create data containers */
 	mxArray* Vt		= SetMexArray(1, T*res/red);
 	mxArray* Vr		= SetMexArray(1, T*res/red);
+	mxArray* ah		= SetMexArray(1, T*res/red);
 
 	/* Pointer to the actual data block */
 	double* Pr_Vt	= mxGetPr(Vt);
 	double* Pr_Vr	= mxGetPr(Vr);
+	double* Pr_ah	= mxGetPr(ah);
 
 	/* Simulation */
 	int count = 0;
@@ -97,7 +82,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		Thalamus.iterate_ODE();
 		Stimulation.check_stim(t);
 		if(t>=onset*res && t%red==0){
-			get_data(count, Thalamus, Pr_Vt, Pr_Vr);
+			get_data(count, Thalamus, Pr_Vt, Pr_Vr, Pr_ah);
 			++count;
 		}
 	}
@@ -105,6 +90,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	/* Output of the simulation */
 	plhs[0] = Vt;
 	plhs[1] = Vr;
+	plhs[2] = ah;
 return;
 }
 /****************************************************************************************************/

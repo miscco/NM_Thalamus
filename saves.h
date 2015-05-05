@@ -29,9 +29,10 @@
 /****************************************************************************************************/
 /*											Save data												*/
 /****************************************************************************************************/
-inline void get_data(int counter, Thalamic_Column& Col,	double* Vt,	double* Vr) {
+inline void get_data(int counter, Thalamic_Column& Col,	double* Vt,	double* Vr,	double* ah) {
 	Vt 		[counter] = Col.Vt 		[0];
 	Vr 		[counter] = Col.Vr 		[0];
+	ah 		[counter] = Col.act_h 	();
 }
 /****************************************************************************************************/
 /*										 		end													*/

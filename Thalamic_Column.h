@@ -29,7 +29,6 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
-#include "macros.h"
 using std::vector;
 
 /****************************************************************************************************/
@@ -44,17 +43,28 @@ typedef boost::variate_generator<ENG,DIST> 	GEN;    /* Variate generator	*/
 
 
 /****************************************************************************************************/
+/*									Macro for vector initialization									*/
+/****************************************************************************************************/
+#ifndef _INIT
+#define _INIT(x)	{x, 0.0, 0.0, 0.0, 0.0}
+#endif
+/****************************************************************************************************/
+/*										 		end			 										*/
+/****************************************************************************************************/
+
+
+/****************************************************************************************************/
 /*								Implementation of the thalamic module 								*/
 /****************************************************************************************************/
 class Thalamic_Column {
 public:
 	/* Constructors for compile check */
-	Thalamic_Column(void)
+    Thalamic_Column(void)
 	{set_RNG();}
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Par)
-	: 	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),	g_h 		(Par[0]),
+    : 	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),	g_h 		(Par[0]),
 		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
 	{set_RNG();}
 
@@ -80,6 +90,7 @@ public:
 	double  m_inf_h		(int) const;
 	double  tau_m_h		(int) const;
 	double  P_h			(int) const;
+	double  act_h		(void)const;
 
 	/* Deactivation functions */
 	double  h_inf_T_t	(int) const;
@@ -97,7 +108,8 @@ public:
 	double 	I_h			(int) const;
 
 	/* Noise functions */
-	double 	noise_xRK 	(int) const;
+    double 	noise_xRK 	(int,int) const;
+    double 	noise_aRK 	(int) const;
 
 	/* ODE functions */
 	void 	set_RK		(int);
@@ -105,21 +117,21 @@ public:
 	void	iterate_ODE (void);
 
 	/* Data storage  access */
-	friend void get_data (int, Thalamic_Column&, _REPEAT(double*, 2));
+    friend void get_data (int, Thalamic_Column&, double*, double*, double*);
 
 private:
 	/* Population variables */
-	vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
+    vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
 					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
 					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
-					Phi_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
-					Phi_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
-					Phi_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
-					Phi_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
-					x_tt	= _INIT(0.0),		/* derivative of Phi_tt								*/
-					x_tr	= _INIT(0.0),		/* derivative of Phi_tr								*/
-					x_rt	= _INIT(0.0),		/* derivative of Phi_rt								*/
-					x_rr	= _INIT(0.0),		/* derivative of Phi_rr								*/
+                    y_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
+                    y_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
+                    y_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
+                    y_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
+                    x_tt	= _INIT(0.0),		/* derivative of y_tt								*/
+                    x_tr	= _INIT(0.0),		/* derivative of y_tr								*/
+                    x_rt	= _INIT(0.0),		/* derivative of y_rt								*/
+                    x_rr	= _INIT(0.0),		/* derivative of y_rr								*/
 					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
 					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
 					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
@@ -129,7 +141,7 @@ private:
 	vector<GEN>		MTRands;
 
 	/* Container for noise */
-	vector<double>	Rand_vars;
+    vector<double>	Rand_vars;
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
@@ -169,7 +181,7 @@ private:
 	const double	g_T_r		= 2.3;
 
 	/* h current */
-	const double	g_h			= 0.07;
+	const double	g_h			= 0.062;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -190,9 +202,9 @@ private:
 	const double 	E_h    		= -40;
 
 	/* Calcium parameters */
-	const double	alpha_Ca	= -50E-6;			/* influx per spike in nmol		*/
+	const double	alpha_Ca	= -51.8E-6;			/* influx per spike in nmol		*/
 	const double	tau_Ca		= 10;				/* calcium time constant in ms	*/
-	const double	Ca_0		= 2.4E-4;				/* resting concentration 		*/
+	const double	Ca_0		= 2.4E-4;			/* resting concentration 		*/
 
 	/* I_h activation parameters */
 	const double 	k1			= 2.5E7;
@@ -204,12 +216,12 @@ private:
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
-	const double	dphi		= 10E-3;
+    const double	dphi		= 120E-3;
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
 	const double 	N_tr		= 3;
-	const double 	N_rt		= 3;
+	const double 	N_rt		= 5;
 	const double 	N_rr		= 30;
 
 	friend class 	Stim;

@@ -22,19 +22,18 @@
 
 /****************************************************************************************************/
 /*		Main file for compilation tests																*/
-/*		The Simulation requires the following boost libraries:	Preprocessor						*/
-/*																Random								*/
+/*		The Simulation requires the following boost libraries:	Random								*/
 /****************************************************************************************************/
 #include <iostream>
-#include <ctime>
+#include <chrono>
 #include "Thalamic_Column.h"
 
 /****************************************************************************************************/
 /*										Fixed simulation settings									*/
 /****************************************************************************************************/
+typedef std::chrono::high_resolution_clock::time_point timer;
 extern const int T		= 30;								/* Simulation length s					*/
 extern const int res 	= 1E4;								/* number of iteration steps per s		*/
-extern const int red 	= res/100;							/* number of iterations that is saved	*/
 extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/
 extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
 /****************************************************************************************************/
@@ -43,43 +42,27 @@ extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
 
 
 /****************************************************************************************************/
-/*									Constants for SRK4 iteration									*/
-/****************************************************************************************************/
-extern const vector<double> B1 = {0,
-								  0.626708569400000081728308032325,
-								  1.7296310295000001389098542858846,
-		 	 	 	 	 	 	  1.2703689705000000831347506391467};
-extern const vector<double> B2 = {0,
-								  0.78000033203198970710445792065002,
-								  1.28727807507536762265942797967,
-								  0.44477273249350995909523476257164};
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/
-
-
-/****************************************************************************************************/
 /*										Main simulation routine										*/
 /****************************************************************************************************/
 int main(void) {
 	/* Initialize the populations */
-	Thalamic_Column Thalamus;
+    Thalamic_Column Thalamus = Thalamic_Column();
 
-	/* Takes the time of the simulation */
-	time_t start,end;
-	time (&start);
+    /* Take the time of the simulation */
+    timer start,end;
 
-	/* Simulation */
-	for (int t=0; t< T*res; ++t) {
-		Thalamus.iterate_ODE();
-	}
-	time (&end);
+    /* Simulation */
+    start = std::chrono::high_resolution_clock::now();
+    for (int t=0; t< T*res; ++t) {
+        Thalamus.iterate_ODE();
+    }
+    end = std::chrono::high_resolution_clock::now();
 
-	/* Time consumed by the simulation */
-	double dif = difftime(end,start);
-	std::cout << "simulation done!\n";
-	std::cout << "took " << dif 	<< " seconds" << "\n";
-	std::cout << "end\n";
+    /* Time consumed by the simulation */
+    double dif = 1E-3*std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+    std::cout << "simulation done!\n";
+    std::cout << "took " << dif 	<< " seconds" << "\n";
+    std::cout << "end\n";
 }
 /****************************************************************************************************/
 /*										 		end			 										*/

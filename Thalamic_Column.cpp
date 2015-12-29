@@ -1,5 +1,5 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
+*	Copyright (c) 2015 Michael Schellenberger Costa
 *
 *	Permission is hereby granted, free of charge, to any person obtaining a copy
 *	of this software and associated documentation files (the "Software"), to deal
@@ -18,6 +18,14 @@
 *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *	THE SOFTWARE.
+*
+*	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+*
+*	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
+*               to auditory stimulation.
+*				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born,
+*               T Martinetz, JC Claussen.
+*				PLoS Compuational Biology (in review)
 */
 
 /****************************************************************************************************/
@@ -265,8 +273,8 @@ void Thalamic_Column::set_RK (int N) {
     y_rr	[N+1] = y_rr [0] + A[N]*dt*(x_rr[N]);
     x_et  	[N+1] = x_et [0] + A[N]*dt*(pow(gamma_e, 2) * (                 - y_et[N]) - 2 * gamma_e * x_et[N]) + noise_xRK(N,0);
     x_er  	[N+1] = x_er [0] + A[N]*dt*(pow(gamma_e, 2) * (N_tr * get_Qt(N)	- y_er[N]) - 2 * gamma_e * x_er[N]);
-    x_rt  	[N+1] = x_rt [0] + A[N]*dt*(pow(gamma_i, 2) * (N_rt * get_Qr(N) - y_rt[N]) - 2 * gamma_i * x_rt[N]);
-    x_rr  	[N+1] = x_rr [0] + A[N]*dt*(pow(gamma_i, 2) * (N_rr * get_Qr(N)	- y_rr[N]) - 2 * gamma_i * x_rr[N]);
+    x_rt  	[N+1] = x_rt [0] + A[N]*dt*(pow(gamma_r, 2) * (N_rt * get_Qr(N) - y_rt[N]) - 2 * gamma_r * x_rt[N]);
+    x_rr  	[N+1] = x_rr [0] + A[N]*dt*(pow(gamma_r, 2) * (N_rr * get_Qr(N)	- y_rr[N]) - 2 * gamma_r * x_rr[N]);
 }
 /****************************************************************************************************/
 /*										 		end			 										*/

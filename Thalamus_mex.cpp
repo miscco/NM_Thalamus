@@ -1,5 +1,5 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
+*	Copyright (c) 2015 Michael Schellenberger Costa
 *
 *	Permission is hereby granted, free of charge, to any person obtaining a copy
 *	of this software and associated documentation files (the "Software"), to deal
@@ -18,12 +18,20 @@
 *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *	THE SOFTWARE.
+*
+*	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+*
+*	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
+*               to auditory stimulation.
+*				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born,
+*               T Martinetz, JC Claussen.
+*				PLoS Compuational Biology (in review)
 */
 
 /****************************************************************************************************/
 /* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
 /* 		mex command is given by:																	*/
-/* 		mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" Thalamus_mew.cpp Thalamic_Column.cpp	*/
+/* 		mex CXXFLAGS="\$CXXFLAGS -std=gnu++0x -fpermissive" Thalamus_mex.cpp Thalamic_Column.cpp	*/
 /****************************************************************************************************/
 #include "mex.h"
 #include "matrix.h"

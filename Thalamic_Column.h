@@ -1,5 +1,5 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
+*	Copyright (c) 2015 Michael Schellenberger Costa
 *
 *	Permission is hereby granted, free of charge, to any person obtaining a copy
 *	of this software and associated documentation files (the "Software"), to deal
@@ -18,6 +18,14 @@
 *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *	THE SOFTWARE.
+*
+*	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+*
+*	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
+*               to auditory stimulation.
+*				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born,
+*               T Martinetz, JC Claussen.
+*				PLoS Compuational Biology (in review)
 */
 
 /************************************************************************************************/
@@ -152,7 +160,7 @@ private:
 
 	/* PSP rise time in ms^-1 */
 	const double 	gamma_e		= 70E-3;
-	const double 	gamma_i		= 100E-3;
+    const double 	gamma_r		= 100E-3;
 
 	/* Conductivities in mS/cm^-2 */
 	/* Leak current */

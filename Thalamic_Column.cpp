@@ -46,8 +46,8 @@ void Thalamic_Column::set_RNG(void) {
     /* Create RNG for each stream */
     for (int i=0; i<N; ++i){
         /* Add the RNG for I_{l} and I_{l,0}*/
-        MTRands.push_back({ENG(rand()), DIST (0.0, dphi*dt)});
-        MTRands.push_back({ENG(rand()), DIST (0.0, dt)});
+        MTRands.push_back(random_stream_normal(0.0, dphi*dt));
+        MTRands.push_back(random_stream_normal(0.0, dt));
 
         /* Get the random number for the first iteration */
         Rand_vars.push_back(MTRands[2*i]());
@@ -83,23 +83,23 @@ double Thalamic_Column::get_Qr	(int N) const{
 /****************************************************************************************************/
 /* Excitatory input to TC population */
 double Thalamic_Column::I_et	(int N) const{
-    double psi = y_tt[N]* (Vt[N]- E_AMPA);
+    double psi = y_et[N]* (Vt[N]- E_AMPA);
 	return psi;
 }
 
 /* Inhibitory input to TC population */
-double Thalamic_Column::I_it	(int N) const{
+double Thalamic_Column::I_rt	(int N) const{
     double psi = y_rt[N]* (Vt[N]- E_GABA);
 	return psi;
 }
 /* Excitatory input to RE population */
 double Thalamic_Column::I_er	(int N) const{
-    double psi = y_tr[N]* (Vr[N]- E_AMPA);
+    double psi = y_er[N]* (Vr[N]- E_AMPA);
 	return psi;
 }
 
 /* Inhibitory input to RE population */
-double Thalamic_Column::I_ir	(int N) const{
+double Thalamic_Column::I_rr	(int N) const{
     double psi = y_rr[N]* (Vr[N]- E_GABA);
 	return psi;
 }
@@ -168,7 +168,8 @@ double Thalamic_Column::tau_m_h	(int N) const{
 
 /* Instantaneous calcium binding onto messenger protein after Chen2012 */
 double Thalamic_Column::P_h	(int N) const{
-    double P_h = k1 * pow(Ca[N], n_P)/(k1*pow(Ca[N], n_P)+k2);
+    /*double P_h = k1 * pow(Ca[N], n_P)/(k1*pow(Ca[N], n_P)+k2); */
+    double P_h = k1 * Ca[N]*Ca[N]*Ca[N]*Ca[N]/(k1*Ca[N]*Ca[N]*Ca[N]*Ca[N]+k2);
 	return P_h;
 }
 
@@ -211,7 +212,7 @@ double Thalamic_Column::I_LK_r	(int N) const{
 
 /* T-type current of TC population */
 double Thalamic_Column::I_T_t	(int N) const{
-    double I = g_T_t * pow(m_inf_T_t(N), 2) * h_T_t[N] * (Vt[N]- E_Ca);
+    double I = g_T_t * m_inf_T_t(N) * m_inf_T_t(N) * h_T_t[N] * (Vt[N]- E_Ca);
 	return I;
 }
 
@@ -251,19 +252,19 @@ double Thalamic_Column::noise_aRK(int M) const{
 /****************************************************************************************************/
 void Thalamic_Column::set_RK (int N) {
 	extern const double dt;
-    Vt	  	[N+1] = Vt   [0] + A[N]*dt*(-(I_L_t(N) + I_et(N) + I_it(N))/tau_t - (I_LK_t(N) + I_T_t(N) + I_h(N)));
-    Vr	  	[N+1] = Vr   [0] + A[N]*dt*(-(I_L_r(N) + I_er(N) + I_ir(N))/tau_r - (I_LK_r(N) + I_T_r(N)));
+    Vt	  	[N+1] = Vt   [0] + A[N]*dt*(-(I_L_t(N) + I_et(N) + I_rt(N))/tau_t - (I_LK_t(N) + I_T_t(N) + I_h(N)));
+    Vr	  	[N+1] = Vr   [0] + A[N]*dt*(-(I_L_r(N) + I_er(N) + I_rr(N))/tau_r - (I_LK_r(N) + I_T_r(N)));
     Ca      [N+1] = Ca   [0] + A[N]*dt*(alpha_Ca * I_T_t(N) - (Ca[N] - Ca_0)/tau_Ca);
     h_T_t   [N+1] = h_T_t[0] + A[N]*dt*(h_inf_T_t(N) - h_T_t[N])/tau_h_T_t(N);
     h_T_r 	[N+1] = h_T_r[0] + A[N]*dt*(h_inf_T_r(N) - h_T_r[N])/tau_h_T_r(N);
     m_h 	[N+1] = m_h  [0] + A[N]*dt*((m_inf_h(N) * (1 - m_h2[N]) - m_h[N])/tau_m_h(N) - k3 * P_h(N) * m_h[N] + k4 * m_h2[N]);
     m_h2 	[N+1] = m_h2 [0] + A[N]*dt*(k3 * P_h(N) * m_h[N] - k4 * m_h2[N]);
-    y_tt	[N+1] = y_tt [0] + A[N]*dt*(x_tt[N]);
-    y_tr	[N+1] = y_tr [0] + A[N]*dt*(x_tr[N]);
+    y_et	[N+1] = y_et [0] + A[N]*dt*(x_et[N]);
+    y_er	[N+1] = y_er [0] + A[N]*dt*(x_er[N]);
     y_rt	[N+1] = y_rt [0] + A[N]*dt*(x_rt[N]);
     y_rr	[N+1] = y_rr [0] + A[N]*dt*(x_rr[N]);
-    x_tt  	[N+1] = x_tt [0] + A[N]*dt*(pow(gamma_e, 2) * (                 - y_tt[N]) - 2 * gamma_e * x_tt[N]) + noise_xRK(N,0);
-    x_tr  	[N+1] = x_tr [0] + A[N]*dt*(pow(gamma_e, 2) * (N_tr * get_Qt(N)	- y_tr[N]) - 2 * gamma_e * x_tr[N]);
+    x_et  	[N+1] = x_et [0] + A[N]*dt*(pow(gamma_e, 2) * (                 - y_et[N]) - 2 * gamma_e * x_et[N]) + noise_xRK(N,0);
+    x_er  	[N+1] = x_er [0] + A[N]*dt*(pow(gamma_e, 2) * (N_tr * get_Qt(N)	- y_er[N]) - 2 * gamma_e * x_er[N]);
     x_rt  	[N+1] = x_rt [0] + A[N]*dt*(pow(gamma_i, 2) * (N_rt * get_Qr(N) - y_rt[N]) - 2 * gamma_i * x_rt[N]);
     x_rr  	[N+1] = x_rr [0] + A[N]*dt*(pow(gamma_i, 2) * (N_rr * get_Qr(N)	- y_rr[N]) - 2 * gamma_i * x_rr[N]);
 }
@@ -279,12 +280,12 @@ void Thalamic_Column::add_RK(void) {
     Vt	  	[0] =(-3*Vt   [0] + 2*Vt   [1] + 4*Vt	[2] + 2* Vt     [3] + Vt	[4])/6;
     Vr	  	[0] =(-3*Vr   [0] + 2*Vr   [1] + 4*Vr	[2] + 2* Vr     [3] + Vr	[4])/6;
     Ca	  	[0] =(-3*Ca   [0] + 2*Ca   [1] + 4*Ca	[2] + 2* Ca     [3] + Ca	[4])/6;
-    y_tt	[0] =(-3*y_tt [0] + 2*y_tt [1] + 4*y_tt	[2] + 2* y_tt	[3] + y_tt	[4])/6;
-    y_tr	[0] =(-3*y_tr [0] + 2*y_tr [1] + 4*y_tr	[2] + 2* y_tr	[3] + y_tr	[4])/6;
+    y_et	[0] =(-3*y_et [0] + 2*y_et [1] + 4*y_et	[2] + 2* y_et	[3] + y_et	[4])/6;
+    y_er	[0] =(-3*y_er [0] + 2*y_er [1] + 4*y_er	[2] + 2* y_er	[3] + y_er	[4])/6;
     y_rt	[0] =(-3*y_rt [0] + 2*y_rt [1] + 4*y_rt	[2] + 2* y_rt	[3] + y_rt	[4])/6;
     y_rr	[0] =(-3*y_rr [0] + 2*y_rr [1] + 4*y_rr	[2] + 2* y_rr	[3] + y_rr	[4])/6;
-    x_tt  	[0] =(-3*x_tt [0] + 2*x_tt [1] + 4*x_tt	[2] + 2* x_tt	[3] + x_tt	[4])/6 + noise_aRK(0);
-    x_tr  	[0] =(-3*x_tr [0] + 2*x_tr [1] + 4*x_tr	[2] + 2* x_tr	[3] + x_tr	[4])/6;
+    x_et  	[0] =(-3*x_et [0] + 2*x_et [1] + 4*x_et	[2] + 2* x_et	[3] + x_et	[4])/6 + noise_aRK(0);
+    x_er  	[0] =(-3*x_er [0] + 2*x_er [1] + 4*x_er	[2] + 2* x_er	[3] + x_er	[4])/6;
     x_rt  	[0] =(-3*x_rt [0] + 2*x_rt [1] + 4*x_rt	[2] + 2* x_rt	[3] + x_rt	[4])/6;
     x_rr  	[0] =(-3*x_rr [0] + 2*x_rr [1] + 4*x_rr	[2] + 2* x_rr	[3] + x_rr	[4])/6;
     h_T_t 	[0] =(-3*h_T_t[0] + 2*h_T_t[1] + 4*h_T_t[2] + 2* h_T_t  [3] + h_T_t	[4])/6;

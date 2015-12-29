@@ -26,21 +26,8 @@
 #pragma once
 #include <cmath>
 #include <vector>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/variate_generator.hpp>
+#include "Random_Stream.h"
 using std::vector;
-
-/****************************************************************************************************/
-/*										Typedefs for RNG											*/
-/****************************************************************************************************/
-typedef boost::mt11213b                    	ENG;    /* Mersenne Twister		*/
-typedef boost::normal_distribution<double>	DIST;   /* Normal Distribution	*/
-typedef boost::variate_generator<ENG,DIST> 	GEN;    /* Variate generator	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
-
 
 /****************************************************************************************************/
 /*									Macro for vector initialization									*/
@@ -80,9 +67,9 @@ public:
 
 	/* Synaptic currents */
 	double 	I_et		(int) const;
-	double 	I_it		(int) const;
+    double 	I_rt		(int) const;
 	double 	I_er		(int) const;
-	double 	I_ir		(int) const;
+    double 	I_rr		(int) const;
 
 	/* Activation functions */
 	double  m_inf_T_t	(int) const;
@@ -124,12 +111,12 @@ private:
     vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
 					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
 					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
-                    y_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
-                    y_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
+                    y_et	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
+                    y_er	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
                     y_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
                     y_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
-                    x_tt	= _INIT(0.0),		/* derivative of y_tt								*/
-                    x_tr	= _INIT(0.0),		/* derivative of y_tr								*/
+                    x_et	= _INIT(0.0),		/* derivative of y_tt								*/
+                    x_er	= _INIT(0.0),		/* derivative of y_tr								*/
                     x_rt	= _INIT(0.0),		/* derivative of y_rt								*/
                     x_rr	= _INIT(0.0),		/* derivative of y_rr								*/
 					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
@@ -138,7 +125,7 @@ private:
 					m_h2	= _INIT(0.0);		/* activation 	of h   channel bound with protein 	*/
 
 	/* Random number generators */
-	vector<GEN>		MTRands;
+    vector<random_stream_normal> MTRands;
 
 	/* Container for noise */
     vector<double>	Rand_vars;
@@ -223,6 +210,10 @@ private:
 	const double 	N_tr		= 3;
 	const double 	N_rt		= 5;
 	const double 	N_rr		= 30;
+
+    /* Parameters for SRK iteration */
+    const vector<double> A = {0.5, 0.5, 1.0, 1.0};
+    const vector<double> B = {0.75, 0.75, 0.0, 0.0};
 
 	friend class 	Stim;
 };

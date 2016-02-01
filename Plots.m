@@ -1,11 +1,11 @@
 % mex command is given by: 
-% mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Thalamus.cpp Thalamic_Column.cpp
+% mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Thalamus_mex.cpp Thalamic_Column.cpp
 
 function Plots(T)
 
 if nargin == 0
-    Con     	= [ 0.063;       % g_h
-                    0.02;       % g_LK_t
+    Con     	= [ 0.01;       % g_h
+                    0.05;       % g_LK
                     3;          % N_tr
                     5;          % N_rt
                     30];		% N_rr 
@@ -23,9 +23,9 @@ if nargin == 0
                     70;       	% duration of the stimulus      in ms
                     5;          % time between stimuli          in s    
                     1];         % time until stimuli after min 	in ms
-    T       	= 30;  		% duration of the simulation
+    T       	= 90;  		% duration of the simulation
 end
-[Vt, Vr, ah] = Thalamus(T, Con, var_stim);
+[Vt, Vr, ah] = Thalamus_mex(T, Con, var_stim);
 
 L        = max(size(Vt));
 timeaxis = linspace(0,T,L);

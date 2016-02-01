@@ -1,32 +1,32 @@
 /*
-*	Copyright (c) 2015 Michael Schellenberger Costa
-*
-*	Permission is hereby granted, free of charge, to any person obtaining a copy
-*	of this software and associated documentation files (the "Software"), to deal
-*	in the Software without restriction, including without limitation the rights
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*	copies of the Software, and to permit persons to whom the Software is
-*	furnished to do so, subject to the following conditions:
-*
-*	The above copyright notice and this permission notice shall be included in
-*	all copies or substantial portions of the Software.
-*
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*	THE SOFTWARE.
-*
-*	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
-*
-*	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
-*               to auditory stimulation.
-*				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born,
-*               T Martinetz, JC Claussen.
-*				PLoS Compuational Biology (in review)
-*/
+ *	Copyright (c) 2015 University of Lübeck
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy
+ *	of this software and associated documentation files (the "Software"), to deal
+ *	in the Software without restriction, including without limitation the rights
+ *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *	copies of the Software, and to permit persons to whom the Software is
+ *	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in
+ *	all copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *	THE SOFTWARE.
+ *
+ *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+ *
+ *	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
+ *				to auditory stimulation.
+ *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
+ *				JC Claussen.
+ *				PLoS Computational Biology In Review (in review).
+ */
 
 /************************************************************************************************/
 /*								Header file of a thalamic module								*/
@@ -54,18 +54,26 @@ using std::vector;
 class Thalamic_Column {
 public:
 	/* Constructors for compile check */
-    Thalamic_Column(void)
+	Thalamic_Column(void)
 	{set_RNG();}
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Par)
-    : 	g_LK_t		(Par[1]),	g_LK_r		(Par[1]),	g_h 		(Par[0]),
+	: 	g_LK		(Par[1]),	g_h 		(Par[0]),
 		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
 	{set_RNG();}
 
 	/* Set strength of input */
 	void	set_input	(double I) {input = I;}
 
+	/* Iterate one time step through SRK4 */
+	void	iterate_ODE (void);
+
+	/* Data storage  access */
+	friend void get_data (int, Thalamic_Column&, double*, double*, double*);
+
+private:
+	/* Declaration of private functions */
 	/* Initialize the RNGs */
 	void 	set_RNG		(void);
 
@@ -75,9 +83,9 @@ public:
 
 	/* Synaptic currents */
 	double 	I_et		(int) const;
-    double 	I_rt		(int) const;
+	double 	I_gt		(int) const;
 	double 	I_er		(int) const;
-    double 	I_rr		(int) const;
+	double 	I_gr		(int) const;
 
 	/* Activation functions */
 	double  m_inf_T_t	(int) const;
@@ -103,40 +111,12 @@ public:
 	double 	I_h			(int) const;
 
 	/* Noise functions */
-    double 	noise_xRK 	(int,int) const;
-    double 	noise_aRK 	(int) const;
+	double 	noise_xRK 	(int,int) const;
+	double 	noise_aRK 	(int) const;
 
 	/* ODE functions */
 	void 	set_RK		(int);
 	void 	add_RK	 	(void);
-	void	iterate_ODE (void);
-
-	/* Data storage  access */
-    friend void get_data (int, Thalamic_Column&, double*, double*, double*);
-
-private:
-	/* Population variables */
-    vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
-					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
-					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
-                    y_et	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
-                    y_er	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
-                    y_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
-                    y_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
-                    x_et	= _INIT(0.0),		/* derivative of y_tt								*/
-                    x_er	= _INIT(0.0),		/* derivative of y_tr								*/
-                    x_rt	= _INIT(0.0),		/* derivative of y_rt								*/
-                    x_rr	= _INIT(0.0),		/* derivative of y_rr								*/
-					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
-					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
-					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
-					m_h2	= _INIT(0.0);		/* activation 	of h   channel bound with protein 	*/
-
-	/* Random number generators */
-    vector<random_stream_normal> MTRands;
-
-	/* Container for noise */
-    vector<double>	Rand_vars;
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
@@ -156,27 +136,29 @@ private:
 	const double 	sigma_r		= 6;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
-	const double 	C1          = (3.14159265/sqrt(3));
+	const double 	C1          = (M_PI/sqrt(3));
 
 	/* PSP rise time in ms^-1 */
 	const double 	gamma_e		= 70E-3;
-    const double 	gamma_r		= 100E-3;
+	const double 	gamma_g		= 100E-3;
 
-	/* Conductivities in mS/cm^-2 */
-	/* Leak current */
-	const double 	g_L_t  		= 1;
-	const double 	g_L_r  		= 1;
+	/* Conductivities */
+	/* Leak  in aU */
+	const double 	g_L    		= 1.;
 
-	/* Potassium leak current */
-	const double 	g_LK_t 		= 0.02;
-	const double 	g_LK_r 		= 0.02;
+	/* Synaptic conductivity in ms */
+	const double 	g_AMPA 		= 1.;
+	const double 	g_GABA 		= 1.;
 
-	/* T current */
+	/* Potassium leak current in mS/m^2 */
+	const double 	g_LK 		= 0.02;
+
+	/* T current in mS/m^2 */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2.3;
 
-	/* h current */
-	const double	g_h			= 0.062;
+	/* h current in mS/m^2 */
+	const double	g_h			= 0.051;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -211,7 +193,7 @@ private:
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
-    const double	dphi		= 120E-3;
+	const double	dphi		= 0E-3;
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
@@ -219,11 +201,34 @@ private:
 	const double 	N_rt		= 5;
 	const double 	N_rr		= 30;
 
-    /* Parameters for SRK iteration */
-    const vector<double> A = {0.5, 0.5, 1.0, 1.0};
-    const vector<double> B = {0.75, 0.75, 0.0, 0.0};
-
 	friend class 	Stim;
+
+	/* Parameters for SRK4 iteration */
+	const vector<double> A = {0.5,  0.5,  1.0, 1.0};
+	const vector<double> B = {0.75, 0.75, 0.0, 0.0};
+
+	/* Random number generators */
+	vector<random_stream_normal> MTRands;
+
+	/* Container for noise */
+	vector<double>	Rand_vars;
+
+	/* Population variables																			*/
+	vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
+					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
+					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
+					s_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
+					s_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
+					s_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
+					s_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
+					x_tt	= _INIT(0.0),		/* derivative of s_tt								*/
+					x_tr	= _INIT(0.0),		/* derivative of s_tr								*/
+					x_rt	= _INIT(0.0),		/* derivative of s_rt								*/
+					x_rr	= _INIT(0.0),		/* derivative of s_rr								*/
+					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
+					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
+					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
+					m_h2	= _INIT(0.0);		/* activation 	of h   channel bound with protein 	*/
 };
 /****************************************************************************************************/
 /*										 		end			 										*/

@@ -1,24 +1,32 @@
 /*
-*	Copyright (c) 2014 Michael Schellenberger Costa
-*
-*	Permission is hereby granted, free of charge, to any person obtaining a copy
-*	of this software and associated documentation files (the "Software"), to deal
-*	in the Software without restriction, including without limitation the rights
-*	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*	copies of the Software, and to permit persons to whom the Software is
-*	furnished to do so, subject to the following conditions:
-*
-*	The above copyright notice and this permission notice shall be included in
-*	all copies or substantial portions of the Software.
-*
-*	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*	THE SOFTWARE.
-*/
+ *	Copyright (c) 2015 University of Lübeck
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy
+ *	of this software and associated documentation files (the "Software"), to deal
+ *	in the Software without restriction, including without limitation the rights
+ *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *	copies of the Software, and to permit persons to whom the Software is
+ *	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in
+ *	all copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *	THE SOFTWARE.
+ *
+ *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
+ *
+ *	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
+ *				to auditory stimulation.
+ *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
+ *				JC Claussen.
+ *				PLoS Computational Biology In Review (in review).
+ */
 
 /************************************************************************************************/
 /*								Header file of a thalamic module								*/
@@ -26,18 +34,15 @@
 #pragma once
 #include <cmath>
 #include <vector>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/variate_generator.hpp>
-#include "macros.h"
+#include "Random_Stream.h"
 using std::vector;
 
 /****************************************************************************************************/
-/*										Typedefs for RNG											*/
+/*									Macro for vector initialization									*/
 /****************************************************************************************************/
-typedef boost::mt11213b                    	ENG;    /* Mersenne Twister		*/
-typedef boost::normal_distribution<double>	DIST;   /* Normal Distribution	*/
-typedef boost::variate_generator<ENG,DIST> 	GEN;    /* Variate generator	*/
+#ifndef _INIT
+#define _INIT(x)	{x, 0.0, 0.0, 0.0, 0.0}
+#endif
 /****************************************************************************************************/
 /*										 		end			 										*/
 /****************************************************************************************************/
@@ -53,14 +58,19 @@ public:
 	{set_RNG();}
 
 	/* Constructor for simulation */
-	Thalamic_Column(double* Con)
-	: 	sigma_t		(Con[0]),	sigma_r		(Con[0]),
-		N_tr		(Con[1]),	N_rt		(Con[2]),	N_rr		(Con[3])
+	Thalamic_Column(double* Par)
+	: 	g_LK		(Par[1]),	g_h 		(Par[0]),
+		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
 	{set_RNG();}
 
-	/* Set strength of input */
-	void	set_input	(double I) {input = I;}
+	/* Iterate one time step through SRK4 */
+	void	iterate_ODE (void);
 
+	/* Data storage  access */
+	friend void get_data (int, Thalamic_Column&, double*, double*, double*);
+
+private:
+	/* Declaration of private functions */
 	/* Initialize the RNGs */
 	void 	set_RNG		(void);
 
@@ -70,15 +80,17 @@ public:
 
 	/* Synaptic currents */
 	double 	I_et		(int) const;
-	double 	I_it		(int) const;
+	double 	I_gt		(int) const;
 	double 	I_er		(int) const;
-	double 	I_ir		(int) const;
+	double 	I_gr		(int) const;
 
 	/* Activation functions */
 	double  m_inf_T_t	(int) const;
 	double  m_inf_T_r	(int) const;
 	double  m_inf_h		(int) const;
 	double  tau_m_h		(int) const;
+	double  P_h			(int) const;
+	double  act_h		(void)const;
 
 	/* Deactivation functions */
 	double  h_inf_T_t	(int) const;
@@ -96,40 +108,12 @@ public:
 	double 	I_h			(int) const;
 
 	/* Noise functions */
-	double 	noise_xRK 	(int) const;
+	double 	noise_xRK 	(int,int) const;
+	double 	noise_aRK 	(int) const;
 
 	/* ODE functions */
 	void 	set_RK		(int);
 	void 	add_RK	 	(void);
-	void	iterate_ODE (void);
-
-	/* Data storage  access */
-	friend void get_data (int, Thalamic_Column&, _REPEAT(double*, 4));
-
-private:
-	/* Population variables */
-	vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
-					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
-					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
-					Phi_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
-					Phi_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
-					Phi_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
-					Phi_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
-					x_tt	= _INIT(0.0),		/* derivative of Phi_tt								*/
-					x_tr	= _INIT(0.0),		/* derivative of Phi_tr								*/
-					x_rt	= _INIT(0.0),		/* derivative of Phi_rt								*/
-					x_rr	= _INIT(0.0),		/* derivative of Phi_rr								*/
-					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
-					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
-					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
-					m_h2	= _INIT(0.0),		/* activation 	of h   channel bound with protein 	*/
-					P_h		= _INIT(0.0);		/* fraction of protein bound with calcium 			*/
-
-	/* Random number generators */
-	vector<GEN>		MTRands;
-
-	/* Container for noise */
-	vector<double>	Rand_vars;
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
@@ -149,27 +133,29 @@ private:
 	const double 	sigma_r		= 6;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
-	const double 	C1          = (3.14159265/sqrt(3));
+	const double 	C1          = (M_PI/sqrt(3));
 
 	/* PSP rise time in ms^-1 */
 	const double 	gamma_e		= 70E-3;
-	const double 	gamma_i		= 100E-3;
+	const double 	gamma_g		= 100E-3;
 
-	/* Conductivities in mS/cm^-2 */
-	/* Leak current */
-	const double 	g_L_t  		= 1;
-	const double 	g_L_r  		= 1;
+	/* Conductivities */
+	/* Leak  in aU */
+	const double 	g_L    		= 1.;
 
-	/* Potassium leak current */
-	const double 	g_LK_t 		= 0.02;
-	const double 	g_LK_r 		= 0.02;
+	/* Synaptic conductivity in ms */
+	const double 	g_AMPA 		= 1.;
+	const double 	g_GABA 		= 1.;
 
-	/* T current */
+	/* Potassium leak current in mS/m^2 */
+	const double 	g_LK 		= 0.02;
+
+	/* T current in mS/m^2 */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2.3;
 
-	/* h current */
-	const double	g_h			= 0.05;
+	/* h current in mS/m^2 */
+	const double	g_h			= 0.051;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
@@ -190,9 +176,9 @@ private:
 	const double 	E_h    		= -40;
 
 	/* Calcium parameters */
-	const double	alpha_Ca	= -52E-6;			/* influx per spike in nmol		*/
+	const double	alpha_Ca	= -51.8E-6;			/* influx per spike in nmol		*/
 	const double	tau_Ca		= 10;				/* calcium time constant in ms	*/
-	const double	Ca_0		= 2.4E-4;				/* resting concentration 		*/
+	const double	Ca_0		= 2.4E-4;			/* resting concentration 		*/
 
 	/* I_h activation parameters */
 	const double 	k1			= 2.5E7;
@@ -204,15 +190,40 @@ private:
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
-	const double	dphi		= 10E-3;
+	const double	dphi		= 0E-3;
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 4;
-	const double 	N_rt		= 4;
-	const double 	N_rr		= 20;
+	const double 	N_tr		= 3;
+	const double 	N_rt		= 5;
+	const double 	N_rr		= 30;
 
-	friend class 	Stim;
+	/* Parameters for SRK4 iteration */
+	const vector<double> A = {0.5,  0.5,  1.0, 1.0};
+	const vector<double> B = {0.75, 0.75, 0.0, 0.0};
+
+	/* Random number generators */
+	vector<random_stream_normal> MTRands;
+
+	/* Container for noise */
+	vector<double>	Rand_vars;
+
+	/* Population variables																			*/
+	vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
+					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
+					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
+					s_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
+					s_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
+					s_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
+					s_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
+					x_tt	= _INIT(0.0),		/* derivative of s_tt								*/
+					x_tr	= _INIT(0.0),		/* derivative of s_tr								*/
+					x_rt	= _INIT(0.0),		/* derivative of s_rt								*/
+					x_rr	= _INIT(0.0),		/* derivative of s_rr								*/
+					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
+					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
+					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/
+					m_h2	= _INIT(0.0);		/* activation 	of h   channel bound with protein 	*/
 };
 /****************************************************************************************************/
 /*										 		end			 										*/

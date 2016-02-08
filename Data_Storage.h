@@ -29,48 +29,19 @@
  */
 
 /****************************************************************************************************/
-/*		Main file for compilation tests																*/
+/*									Functions for data storage										*/
 /****************************************************************************************************/
-#include <iostream>
-#include <chrono>
+#pragma once
 #include "Thalamic_Column.h"
 
 /****************************************************************************************************/
-/*										Fixed simulation settings									*/
+/*											Save data												*/
 /****************************************************************************************************/
-typedef std::chrono::high_resolution_clock::time_point timer;
-extern const int T		= 30;								/* Simulation length s					*/
-extern const int res 	= 1E4;								/* number of iteration steps per s		*/
-extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/
-extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
-
-
-/****************************************************************************************************/
-/*										Main simulation routine										*/
-/****************************************************************************************************/
-int main(void) {
-	/* Initialize the populations */
-	Thalamic_Column Thalamus = Thalamic_Column();
-
-	/* Take the time of the simulation */
-	timer start,end;
-
-	/* Simulation */
-	start = std::chrono::high_resolution_clock::now();
-	for (int t=0; t< T*res; ++t) {
-		Thalamus.iterate_ODE();
-	}
-	end = std::chrono::high_resolution_clock::now();
-
-	/* Time consumed by the simulation */
-	double dif = 1E-3*std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
-	std::cout << "simulation done!\n";
-	std::cout << "took " << dif 	<< " seconds" << "\n";
-	std::cout << "end\n";
+void get_data(int counter, Thalamic_Column& Col,	double* Vt,	double* Vr,	double* ah) {
+	Vt 		[counter] = Col.Vt 		[0];
+	Vr 		[counter] = Col.Vr 		[0];
+	ah 		[counter] = Col.act_h 	();
 }
 /****************************************************************************************************/
-/*										 		end			 										*/
+/*										 		end													*/
 /****************************************************************************************************/

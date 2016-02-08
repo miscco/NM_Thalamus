@@ -59,8 +59,7 @@ public:
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Par)
-	: 	g_LK		(Par[1]),	g_h 		(Par[0]),
-		N_tr		(Par[2]),	N_rt		(Par[3]),	N_rr		(Par[4])
+	: 	g_LK		(Par[1]),	g_h 		(Par[0])
 	{set_RNG();}
 
 	/* Iterate one time step through SRK4 */

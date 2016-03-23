@@ -25,7 +25,7 @@
  *				to auditory stimulation.
  *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
  *				JC Claussen.
- *				PLoS Computational Biology In Review (in review).
+ *				PLoS Computational Biology (in review).
  */
 
 /************************************************************************************************/
@@ -59,7 +59,7 @@ public:
 
 	/* Constructor for simulation */
 	Thalamic_Column(double* Par)
-	: 	g_LK		(Par[1]),	g_h 		(Par[0])
+	: 	g_LK		(Par[0]),	g_h 		(Par[1])
 	{set_RNG();}
 
 	/* Iterate one time step through SRK4 */
@@ -116,20 +116,20 @@ private:
 
 	/* Declaration and Initialization of parameters */
 	/* Membrane time in ms */
-	const double 	tau_t 		= 20;
-	const double 	tau_r 		= 20;
+	const double 	tau_t 		= 20.;
+	const double 	tau_r 		= 20.;
 
 	/* Maximum firing rate in ms^-1 */
 	const double 	Qt_max		= 400.E-3;
 	const double 	Qr_max		= 400.E-3;
 
 	/* Sigmoid threshold in mV */
-	const double 	theta_t		= -58.6;
-	const double 	theta_r		= -58.6;
+	const double 	theta_t		= -58.5;
+	const double 	theta_r		= -58.5;
 
 	/* Sigmoid gain in mV */
-	const double 	sigma_t		= 6;
-	const double 	sigma_r		= 6;
+	const double 	sigma_t		= 6.;
+	const double 	sigma_r		= 6.;
 
 	/* Scaling parameter for sigmoidal mapping (dimensionless) */
 	const double 	C1          = (M_PI/sqrt(3));
@@ -138,7 +138,10 @@ private:
 	const double 	gamma_e		= 70E-3;
 	const double 	gamma_g		= 100E-3;
 
-	/* Conductivities */
+	/* Membrane capacitance in muF/cm^2 */
+	const double	C_m			= 1.;
+
+	/* Weights/ conductivities */
 	/* Leak  in aU */
 	const double 	g_L    		= 1.;
 
@@ -147,36 +150,36 @@ private:
 	const double 	g_GABA 		= 1.;
 
 	/* Potassium leak current in mS/m^2 */
-	const double 	g_LK 		= 0.02;
+	double			g_LK 		= 0.033;
 
 	/* T current in mS/m^2 */
 	const double	g_T_t		= 3;
 	const double	g_T_r		= 2.3;
 
 	/* h current in mS/m^2 */
-	const double	g_h			= 0.051;
+	double			g_h			= 0.02;
 
 	/* Reversal potentials in mV */
 	/* Synaptic */
-	const double 	E_AMPA  	= 0;
-	const double 	E_GABA  	= -70;
+	const double 	E_AMPA  	= 0.;
+	const double 	E_GABA  	= -70.;
 
 	/* Leak */
-	const double 	E_L_t 		= -70;
-	const double 	E_L_r 		= -70;
+	const double 	E_L_t 		= -70.;
+	const double 	E_L_r 		= -70.;
 
 	/* Potassium */
-	const double 	E_K    		= -100;
+	const double 	E_K    		= -100.;
 
 	/* I_T current */
-	const double 	E_Ca    	= 120;
+	const double 	E_Ca    	= 120.;
 
 	/* I_h current */
-	const double 	E_h    		= -40;
+	const double 	E_h    		= -40.;
 
 	/* Calcium parameters */
 	const double	alpha_Ca	= -51.8E-6;			/* influx per spike in nmol		*/
-	const double	tau_Ca		= 10;				/* calcium time constant in ms	*/
+	const double	tau_Ca		= 10.;				/* calcium time constant in ms	*/
 	const double	Ca_0		= 2.4E-4;			/* resting concentration 		*/
 
 	/* I_h activation parameters */
@@ -184,8 +187,8 @@ private:
 	const double 	k2			= 4E-4;
 	const double 	k3			= 1E-1;
 	const double 	k4			= 1E-3;
-	const double 	n_P			= 4;
-	const double 	g_inc		= 2;
+	const double 	n_P			= 4.;
+	const double 	g_inc		= 2.;
 
 	/* Noise parameters in ms^-1 */
 	const double 	mphi		= 0E-3;
@@ -193,9 +196,9 @@ private:
 	double			input		= 0.0;
 
 	/* Connectivities (dimensionless) */
-	const double 	N_tr		= 3;
-	const double 	N_rt		= 5;
-	const double 	N_rr		= 30;
+	const double 	N_tr		= 3.;
+	const double 	N_rt		= 5.;
+	const double 	N_rr		= 25.;
 
 	/* Parameters for SRK4 iteration */
 	const vector<double> A = {0.5,  0.5,  1.0, 1.0};
@@ -211,14 +214,14 @@ private:
 	vector<double> 	Vt		= _INIT(E_L_t),		/* TC membrane voltage								*/
 					Vr		= _INIT(E_L_r),		/* RE membrane voltage								*/
 					Ca		= _INIT(Ca_0),		/* Calcium concentration of TC population			*/
-					s_tt	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
-					s_tr	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
-					s_rt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
-					s_rr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
-					x_tt	= _INIT(0.0),		/* derivative of s_tt								*/
-					x_tr	= _INIT(0.0),		/* derivative of s_tr								*/
-					x_rt	= _INIT(0.0),		/* derivative of s_rt								*/
-					x_rr	= _INIT(0.0),		/* derivative of s_rr								*/
+					s_et	= _INIT(0.0),		/* PostSP from TC population to TC population		*/
+					s_er	= _INIT(0.0),		/* PostSP from TC population to RE population		*/
+					s_gt	= _INIT(0.0),		/* PostSP from RE population to TC population		*/
+					s_gr	= _INIT(0.0),		/* PostSP from RE population to RE population		*/
+					x_et	= _INIT(0.0),		/* derivative of s_et								*/
+					x_er	= _INIT(0.0),		/* derivative of s_er								*/
+					x_gt	= _INIT(0.0),		/* derivative of s_gt								*/
+					x_gr	= _INIT(0.0),		/* derivative of s_gr								*/
 					h_T_t	= _INIT(0.0),		/* inactivation of T channel						*/
 					h_T_r	= _INIT(0.0),		/* inactivation of T channel						*/
 					m_h		= _INIT(0.0),		/* activation 	of h   channel						*/

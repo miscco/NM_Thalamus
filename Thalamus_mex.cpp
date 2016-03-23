@@ -25,14 +25,13 @@
  *				to auditory stimulation.
  *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
  *				JC Claussen.
- *				PLoS Computational Biology In Review (in review).
+ *				PLoS Computational Biology (in review).
  */
 
 /****************************************************************************************************/
 /* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
 /* 		mex command is given by:																	*/
-/* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11" Thalamus_mex.cpp Thalamic_Column.cpp					*/
-/*		The Simulation requires the following boost libraries:	Random								*/
+/* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Thalamus_mex.cpp Thalamic_Column.cpp				*/
 /****************************************************************************************************/
 #include "mex.h"
 #include "matrix.h"

@@ -9,8 +9,8 @@ SOURCES +=  Thalamic_Column.cpp \
 	    Thalamus.cpp	\
 	    Thalamus_mex.cpp
 
-HEADERS +=  ODE.h		\
-	    Data_Storage.h	\
+HEADERS +=  Data_Storage.h	\
+	    ODE.h		\
 	    Random_Stream.h	\
 	    Thalamic_Column.h
 

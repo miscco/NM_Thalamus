@@ -28,86 +28,87 @@
  *				PLoS Computational Biology (in review).
  */
 
-/****************************************************************************************************/
-/* 		Implementation of the simulation as MATLAB routine (mex compiler)							*/
-/* 		mex command is given by:																	*/
-/* 		mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Thalamus_mex.cpp Thalamic_Column.cpp				*/
-/****************************************************************************************************/
+/******************************************************************************/
+/* Implementation of the simulation as MATLAB routine (mex compiler)		  */
+/* mex command is given by:													  */
+/* mex CXXFLAGS="\$CXXFLAGS -std=c++11 -O3" Thalamus_mex.cpp                  */
+/*                                          Thalamic_Column.cpp               */
+/******************************************************************************/
 #include "mex.h"
 #include "matrix.h"
+
+#include <iterator>
+#include <vector>
+
 #include "Data_Storage.h"
-mxArray* SetMexArray(int N, int M);
+#include "Thalamic_Column.h"
+mxArray* GetMexArray(int N, int M);
 
-/****************************************************************************************************/
-/*										Fixed simulation settings									*/
-/****************************************************************************************************/
-extern const int onset	= 15;								/* time until data is stored in  s		*/
-extern const int res 	= 1E3;								/* number of iteration steps per s		*/
-extern const int red 	= res/100;							/* number of iterations that is saved	*/
-extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/
-extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                          Fixed simulation settings						  */
+/******************************************************************************/
+extern const int onset	= 20;		/* Time until data is stored in  s		  */
+extern const int res 	= 1E4;		/* Number of iteration steps per s		  */
+extern const int red 	= 1E2;		/* Number of iterations steps not saved	  */
+extern const double dt 	= 1E3/res;	/* Duration of a time step in ms		  */
+extern const double h	= sqrt(dt); /* Square root of dt for SRK iteration	  */
 
-/****************************************************************************************************/
-/*										Simulation routine	 										*/
-/*										lhs defines outputs											*/
-/*										rhs defines inputs											*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                              Simulation routine	 						  */
+/*								lhs defines outputs							  */
+/*								rhs defines inputs							  */
+/******************************************************************************/
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-	/* Initialize the seeder */
-	srand(time(NULL));
+    /* Initialize the seeder */
+    srand(time(NULL));
 
-	/* Fetch inputs */
-	const int T				= (int) (mxGetScalar(prhs[0]));	/* Duration of simulation in s			*/
-	const int Time 			= (T+onset)*res;				/* Total number of iteration steps		*/
-	double* Param_Thalamus	= mxGetPr (prhs[1]);			/* Parameters of cortical module		*/
+    /* Fetch inputs */
+    const int T				= (int) (mxGetScalar(prhs[0]));	/* Duration of simulation in s			*/
+    const int Time 			= (T+onset)*res;				/* Total number of iteration steps		*/
+    double* Param_Thalamus	= mxGetPr (prhs[1]);			/* Parameters of cortical module		*/
 
-	/* Initialize the populations */
-	Thalamic_Column Thalamus(Param_Thalamus);
+    /* Initialize the populations */
+    Thalamic_Column Thalamus(Param_Thalamus);
 
-	/* Create data containers */
-	mxArray* Vt		= SetMexArray(1, T*res/red);
-	mxArray* Vr		= SetMexArray(1, T*res/red);
-	mxArray* ah		= SetMexArray(1, T*res/red);
+    /* Create data containers */
+    std::vector<mxArray*> dataArray;
+    dataArray.reserve(3);
+    dataArray.push_back(GetMexArray(1, T*res/red));	// Vt
+    dataArray.push_back(GetMexArray(1, T*res/red));	// Vr
+    dataArray.push_back(GetMexArray(1, T*res/red));	// act_h
 
-	/* Pointer to the actual data block */
-	double* Pr_Vt	= mxGetPr(Vt);
-	double* Pr_Vr	= mxGetPr(Vr);
-	double* Pr_ah	= mxGetPr(ah);
+    /* Pointer to the data blocks */
+    std::vector<double*> dataPointer;
+    dataPointer.reserve(dataArray.size());
+    for (auto &dataptr : dataArray) {
+        dataPointer.push_back(mxGetPr(dataptr));
+    }
 
-	/* Simulation */
-	int count = 0;
-	for (int t=0; t<Time; ++t) {
-		Thalamus.iterate_ODE();
-		if(t>=onset*res && t%red==0){
-			get_data(count, Thalamus, Pr_Vt, Pr_Vr, Pr_ah);
-			++count;
-		}
-	}
+    /* Simulation */
+    int count = 0;
+    for (unsigned t=0; t < Time; ++t) {
+        Thalamus.iterate_ODE();
+        if(t >= onset*res && t%red == 0){
+            get_data(count, Thalamus, dataPointer);
+            ++count;
+        }
+    }
 
-	/* Output of the simulation */
-	plhs[0] = Vt;
-	plhs[1] = Vr;
-	plhs[2] = ah;
-return;
+    /* Return the data containers */
+    nlhs = dataArray.size()+1;
+    for (auto &dataptr : dataArray) {
+        plhs[std::distance(&dataptr, dataArray.data())] = dataptr;
+    }
+    return;
 }
-/****************************************************************************************************/
-/*												end													*/
-/****************************************************************************************************/
 
-
-/****************************************************************************************************/
-/*									Create MATLAB data container									*/
-/****************************************************************************************************/
-mxArray* SetMexArray(int N, int M) {
-	mxArray* Array	= mxCreateDoubleMatrix(0, 0, mxREAL);
-	mxSetM(Array, N);
-	mxSetN(Array, M);
-	mxSetData(Array, mxMalloc(sizeof(double)*M*N));
-	return Array;
+/******************************************************************************/
+/*                          Create MATLAB data containers					  */
+/******************************************************************************/
+mxArray* GetMexArray(int N, int M) {
+    mxArray* Array	= mxCreateDoubleMatrix(0, 0, mxREAL);
+    mxSetM(Array, N);
+    mxSetN(Array, M);
+    mxSetData(Array, mxMalloc(sizeof(double)*M*N));
+    return Array;
 }
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/

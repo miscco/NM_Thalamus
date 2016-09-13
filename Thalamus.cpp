@@ -25,52 +25,46 @@
  *				to auditory stimulation.
  *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
  *				JC Claussen.
- *				PLoS Computational Biology (in review).
+ *				PLoS Computational Biology http://dx.doi.org/10.1371/journal.pcbi.1005022
  */
 
-/****************************************************************************************************/
-/*		Main file for compilation tests																*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                  Main file for compilation and runtime tests				  */
+/******************************************************************************/
 #include <iostream>
 #include <chrono>
+
 #include "Thalamic_Column.h"
 
-/****************************************************************************************************/
-/*										Fixed simulation settings									*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                          Fixed simulation settings						  */
+/******************************************************************************/
 typedef std::chrono::high_resolution_clock::time_point timer;
-extern const int T		= 30;								/* Simulation length s					*/
-extern const int res 	= 1E4;								/* number of iteration steps per s		*/
-extern const double dt 	= 1E3/res;							/* duration of a timestep in ms			*/
-extern const double h	= sqrt(dt);							/* squareroot of dt for SRK iteration	*/
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/
+extern const int T      = 30;		/* Time until data is stored in  s		  */
+extern const int res 	= 1E4;		/* Number of iteration steps per s		  */
+extern const double dt 	= 1E3/res;	/* Duration of a time step in ms		  */
+extern const double h	= sqrt(dt); /* Square root of dt for SRK iteration	  */
 
-
-/****************************************************************************************************/
-/*										Main simulation routine										*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                              Main simulation routine						  */
+/******************************************************************************/
 int main(void) {
-	/* Initialize the populations */
-	Thalamic_Column Thalamus = Thalamic_Column();
+    std::vector<double> param = {0.2, 0.06};
+    Thalamic_Column Thalamus (param.data());
 
-	/* Take the time of the simulation */
-	timer start,end;
+    /* Take the time of the simulation */
+    timer start,end;
 
-	/* Simulation */
-	start = std::chrono::high_resolution_clock::now();
-	for (int t=0; t< T*res; ++t) {
-		Thalamus.iterate_ODE();
-	}
-	end = std::chrono::high_resolution_clock::now();
+    /* Simulation */
+    start = std::chrono::high_resolution_clock::now();
+    for (unsigned t=0; t< T*res; ++t) {
+        Thalamus.iterate_ODE();
+    }
+    end = std::chrono::high_resolution_clock::now();
 
-	/* Time consumed by the simulation */
-	double dif = 1E-3*std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
-	std::cout << "simulation done!\n";
-	std::cout << "took " << dif 	<< " seconds" << "\n";
-	std::cout << "end\n";
+    /* Time consumed by the simulation */
+    double dif = 1E-3*std::chrono::duration_cast<std::chrono::milliseconds>( end - start ).count();
+    std::cout << "simulation done!\n";
+    std::cout << "took " << dif 	<< " seconds" << "\n";
+    std::cout << "end\n";
 }
-/****************************************************************************************************/
-/*										 		end			 										*/
-/****************************************************************************************************/

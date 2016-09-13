@@ -20,28 +20,17 @@
  *	THE SOFTWARE.
  *
  *	AUTHORS:	Michael Schellenberger Costa: mschellenbergercosta@gmail.com
- *
- *	Based on:	A thalamocortical neural mass model of the EEG during NREM sleep and its response
- *				to auditory stimulation.
- *				M Schellenberger Costa, A Weigenand, H-VV Ngo, L Marshall, J Born, T Martinetz,
- *				JC Claussen.
- *				PLoS Computational Biology (in review).
  */
 
-/****************************************************************************************************/
-/*									Functions for data storage										*/
-/****************************************************************************************************/
+/******************************************************************************/
+/*                        Functions for data storage                          */
+/******************************************************************************/
 #pragma once
+#include <vector>
 #include "Thalamic_Column.h"
 
-/****************************************************************************************************/
-/*											Save data												*/
-/****************************************************************************************************/
-void get_data(int counter, Thalamic_Column& Col,	double* Vt,	double* Vr,	double* ah) {
-	Vt 		[counter] = Col.Vt 		[0];
-	Vr 		[counter] = Col.Vr 		[0];
-	ah 		[counter] = Col.act_h 	();
+void get_data(unsigned counter, Thalamic_Column& Thalamus, std::vector<double*> pData) {
+    pData[0][counter] = Thalamus.Vt 		[0];
+    pData[0][counter] = Thalamus.Vr 		[0];
+    pData[0][counter] = Thalamus.act_h 	();
 }
-/****************************************************************************************************/
-/*										 		end													*/
-/****************************************************************************************************/

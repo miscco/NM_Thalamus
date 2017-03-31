@@ -29,7 +29,7 @@
 #include <vector>
 #include "Thalamic_Column.h"
 
-void get_data(unsigned counter, Thalamic_Column& Thalamus, std::vector<double*> pData) {
+void get_data(unsigned counter, Thalamic_Column& Thalamus, std::vector<double*>& pData) {
     pData[0][counter] = Thalamus.Vt 		[0];
     pData[0][counter] = Thalamus.Vr 		[0];
     pData[0][counter] = Thalamus.act_h 	();

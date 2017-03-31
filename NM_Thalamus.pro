@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-TARGET = Thalamus.cpp
+TARGET = release_binary
 
 SOURCES +=  Thalamic_Column.cpp \
 			Thalamus.cpp	\

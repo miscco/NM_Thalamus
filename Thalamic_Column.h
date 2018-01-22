@@ -32,6 +32,7 @@
 /*						Implementation of a thalamic module					  */
 /******************************************************************************/
 #pragma once
+#include <array>
 #include <cmath>
 #include <vector>
 
@@ -40,7 +41,11 @@
 class Thalamic_Column {
 public:
     Thalamic_Column(double* Par)
-    : g_LK (Par[0]), g_h (Par[1]) {set_RNG();}
+    : g_LK (Par[0])
+    , g_h (Par[1])
+    {
+        set_RNG();
+    }
 
     /* Iterate one time step through SRK4 */
     void	iterate_ODE (void);
@@ -91,104 +96,107 @@ private:
     void 	add_RK	 	(void);
 
     /* Helper functions */
-    inline std::vector<double> init (double value)
-    {return {value, 0.0, 0.0, 0.0, 0.0};}
+    inline std::vector<double> init (double value) {
+        return {value, 0.0, 0.0, 0.0, 0.0};
+    }
 
-    inline void add_RK (std::vector<double>& var)
-    {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6;}
+    inline void add_RK (std::vector<double>& var) {
+        var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6;
+    }
 
-    inline void add_RK_noise (std::vector<double>& var, unsigned noise)
-    {var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);}
+    inline void add_RK_noise (std::vector<double>& var, unsigned noise) {
+        var[0] = (-3*var[0] + 2*var[1] + 4*var[2] + 2*var[3] + var[4])/6 + noise_aRK(noise);
+    }
 
     /* Declaration and Initialization of parameters */
     /* Membrane time in ms */
-    const double 	tau_t 		= 20.;
-    const double 	tau_r 		= 20.;
+    static constexpr double 	tau_t 		= 20.;
+    static constexpr double 	tau_r 		= 20.;
 
     /* Maximum firing rate in ms^-1 */
-    const double 	Qt_max		= 400.E-3;
-    const double 	Qr_max		= 400.E-3;
+    static constexpr double 	Qt_max		= 400.E-3;
+    static constexpr double 	Qr_max		= 400.E-3;
 
     /* Sigmoid threshold in mV */
-    const double 	theta_t		= -58.5;
-    const double 	theta_r		= -58.5;
+    static constexpr double 	theta_t		= -58.5;
+    static constexpr double 	theta_r		= -58.5;
 
     /* Sigmoid gain in mV */
-    const double 	sigma_t		= 6.;
-    const double 	sigma_r		= 6.;
+    static constexpr double 	sigma_t		= 6.;
+    static constexpr double 	sigma_r		= 6.;
 
     /* Scaling parameter for sigmoidal mapping (dimensionless) */
-    const double 	C1          = (M_PI/sqrt(3));
+    static constexpr double 	C1          = (M_PI/std::sqrt(3));
 
     /* PSP rise time in ms^-1 */
-    const double 	gamma_e		= 70E-3;
-    const double 	gamma_g		= 100E-3;
+    static constexpr double 	gamma_e		= 70E-3;
+    static constexpr double 	gamma_g		= 100E-3;
 
     /* Membrane capacitance in muF/cm^2 */
-    const double	C_m			= 1.;
+    static constexpr double     C_m			= 1.;
 
     /* Weights/ conductivities */
     /* Leak  in aU */
-    const double 	g_L    		= 1.;
+    static constexpr double 	g_L    		= 1.;
 
     /* Synaptic conductivity in ms */
-    const double 	g_AMPA 		= 1.;
-    const double 	g_GABA 		= 1.;
+    static constexpr double 	g_AMPA 		= 1.;
+    static constexpr double 	g_GABA 		= 1.;
 
     /* Potassium leak current in mS/m^2 */
-    double			g_LK 		= 0.033;
+    const double                g_LK 		= 0.033;
 
     /* T current in mS/m^2 */
-    const double	g_T_t		= 3;
-    const double	g_T_r		= 2.3;
+    static constexpr double     g_T_t		= 3;
+    static constexpr double     g_T_r		= 2.3;
 
     /* h current in mS/m^2 */
-    double			g_h			= 0.02;
+    const double                g_h			= 0.02;
 
     /* Reversal potentials in mV */
     /* Synaptic */
-    const double 	E_AMPA  	= 0.;
-    const double 	E_GABA  	= -70.;
+    static constexpr double 	E_AMPA  	= 0.;
+    static constexpr double 	E_GABA  	= -70.;
 
     /* Leak */
-    const double 	E_L_t 		= -70.;
-    const double 	E_L_r 		= -70.;
+    static constexpr double 	E_L_t 		= -70.;
+    static constexpr double 	E_L_r 		= -70.;
 
     /* Potassium */
-    const double 	E_K    		= -100.;
+    static constexpr double 	E_K    		= -100.;
 
     /* I_T current */
-    const double 	E_Ca    	= 120.;
+    static constexpr double 	E_Ca    	= 120.;
 
     /* I_h current */
-    const double 	E_h    		= -40.;
+    static constexpr double 	E_h    		= -40.;
 
     /* Calcium parameters */
-    const double	alpha_Ca	= -51.8E-6;			/* influx per spike in nmol		*/
-    const double	tau_Ca		= 10.;				/* calcium time constant in ms	*/
-    const double	Ca_0		= 2.4E-4;			/* resting concentration 		*/
+    static constexpr double 	alpha_Ca	= -51.8E-6;			/* influx per spike in nmol		*/
+    static constexpr double     tau_Ca		= 10.;				/* calcium time constant in ms	*/
+    static constexpr double     Ca_0		= 2.4E-4;			/* resting concentration 		*/
 
     /* I_h activation parameters */
-    const double 	k1			= 2.5E7;
-    const double 	k2			= 4E-4;
-    const double 	k3			= 1E-1;
-    const double 	k4			= 1E-3;
-    const double 	n_P			= 4.;
-    const double 	g_inc		= 2.;
+    static constexpr double 	k1			= 2.5E7;
+    static constexpr double 	k2			= 4E-4;
+    static constexpr double 	k3			= 1E-1;
+    static constexpr double 	k4			= 1E-3;
+    static constexpr double 	n_P			= 4.;
+    static constexpr double 	g_inc		= 2.;
 
     /* Noise parameters in ms^-1 */
-    const double 	mphi		= 0E-3;
-    const double	dphi		= 0E-3;
-    double			input		= 0.0;
+    static constexpr double 	mphi		= 0E-3;
+    static constexpr double     dphi		= 0E-3;
+    double                      input		= 0.0;
 
     /* Connectivities (dimensionless) */
-    const double 	N_tr		= 3.;
-    const double 	N_rt		= 5.;
-    const double 	N_rr		= 25.;
+    static constexpr double 	N_tr		= 3.;
+    static constexpr double 	N_rt		= 5.;
+    static constexpr double 	N_rr		= 25.;
 
     /* Parameters for SRK4 iteration */
-    const std::vector<double> A = {0.5,  0.5,  1.0, 1.0};
-    const std::vector<double> B = {0.75, 0.75, 0.0, 0.0};
+    static constexpr std::array<double,4> A = {0.5, 0.5, 1.0, 1.0};
+    static constexpr std::array<double,4> B = {0.75, 0.75, 0.0, 0.0};
 
     /* Random number generators */
     std::vector<randomStreamNormal> MTRands;

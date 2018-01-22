@@ -33,6 +33,10 @@
 /******************************************************************************/
 #include "Thalamic_Column.h"
 
+// std::array needs to be defined here
+constexpr std::array<double,4> Thalamic_Column::A;
+constexpr std::array<double,4> Thalamic_Column::B;
+
 /******************************************************************************/
 /*							Initialization of RNG 							  */
 /******************************************************************************/
@@ -44,10 +48,10 @@ void Thalamic_Column::set_RNG(void) {
     Rand_vars.reserve(2*numRandomVariables);
     for (unsigned i=0; i < numRandomVariables; ++i){
         /* Add the RNG for I_{l}*/
-        MTRands.push_back(randomStreamNormal(0.0, dphi*dt));
+        MTRands.emplace_back(0.0, dphi*dt);
 
         /* Add the RNG for I_{l,0} */
-        MTRands.push_back(randomStreamNormal(0.0, dt));
+        MTRands.emplace_back(0.0, dt);
 
         /* Get the random number for the first iteration */
         Rand_vars.push_back(MTRands[2*i]());
